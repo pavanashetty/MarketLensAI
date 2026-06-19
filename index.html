@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insightify Copilot - Executive Portal</title>
+    <!-- Tailwind CSS CDN for high-fidelity styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .active-tab {
+            border-left: 4px solid #2563eb;
+            background-color: #f1f5f9;
+            color: #1e40af;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Header / Global Status Bar -->
+    <header class="bg-slate-900 text-white px-6 py-4 fixed top-0 left-0 right-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded text-white font-bold tracking-wider text-sm">MMG</div>
+            <div>
+                <h1 class="text-lg font-bold">Insightify Copilot™ Portal</h1>
+                <p class="text-xs text-slate-400">MarketMinds Global (Singapore) • 60-Day Pilot Tracker</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 font-medium">
+                ● Pilot Status: Active (Day 1)
+            </span>
+            <span class="text-xs text-slate-400">Authored by: Principal GenAI PM</span>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="flex pt-16 min-h-screen">
+        
+        <!-- Interactive Sidebar Navigation -->
+        <aside class="w-80 bg-white border-r border-slate-200 fixed top-16 bottom-0 left-0 overflow-y-auto p-4 space-y-6">
+            <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 1: Alignment</p>
+                <nav class="space-y-1">
+                    <button onclick="switchTab('step1')" id="btn-step1" class="w-full text-left px-3 py-2 text-sm rounded transition active-tab">
+                        1. Product Brief & 1-Pager
+                    </button>
+                    <button onclick="switchTab('step2')" id="btn-step2" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        2. Persona & JTBD Discoveries
+                    </button>
+                    <button onclick="switchTab('step3')" id="btn-step3" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        3. Business Value & CBA Matrix
+                    </button>
+                </nav>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 2: Validation</p>
+                <nav class="space-y-1">
+                    <button onclick="switchTab('step4')" id="btn-step4" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        4. Mega Persona & Survey Prompts
+                    </button>
+                    <button onclick="switchTab('step5')" id="btn-step5" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        5. Segmentation & Early Adopters
+                    </button>
+                    <button onclick="switchTab('step6')" id="btn-step6" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        6. Feasibility Experimentation
+                    </button>
+                </nav>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 3: Prototyping & Scale</p>
+                <nav class="space-y-1">
+                    <button onclick="switchTab('step7')" id="btn-step7" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        7. RAG Technical Architecture
+                    </button>
+                    <button onclick="switchTab('step8')" id="btn-step8" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
+                        8. Outcome-Driven Value Roadmap
+                    </button>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Display Panel -->
+        <main class="flex-1 ml-80 p-8 bg-slate-50 overflow-y-auto max-w-5xl">
+            
+            <!-- STEP 1 CONTAINER -->
+            <section id="step1" class="tab-content bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 1</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Product Idea Brief & "Working Backwards" 1-Pager</h2>
+                
+                <div class="bg-slate-900 text-slate-100 p-4 rounded-lg mb-6 border-l-4 border-blue-500">
+                    <p class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Internal Press Release</p>
+                    <h3 class="text-lg font-bold text-white mt-1">MarketMinds Global Launches "Insightify" Copilot to Eliminate 72-Hour Bottleneck</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-slate-900">Summary</h4>
+                        <p class="text-sm text-slate-600 mt-1 leading-relaxed">
+                            MarketMinds Global today announced the internal rollout and 60-day customer pilot of Insightify Copilot, an advanced Generative AI-powered workspace engineered specifically for market research analysts. By integrating real-time ingestion pipelines with a hyper-secure Retrieval-Augmented Generation (RAG) architecture, Insightify automates the manual sifting of millions of unstructured data points—including global news, social media chatter, analyst reports, and forum discussions. The platform compresses the current 72-hour comprehensive report lifecycle to under 24 hours, completely eliminating analyst burnout and elevating client insight actionability back to elite tier performance standards.
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                        <h4 class="font-bold text-amber-900 flex items-center">⚠️ Problem Statement</h4>
+                        <p class="text-sm text-amber-800 italic mt-1">
+                            "Our current market intelligence engine is bottlenecked by manual data processing, causing our Time-to-Insight metric to balloon from 24 hours to an unacceptable 72 hours over the last six months. This operational lag has caused our client Actionability Score to plummet from 4.5/5 to 3.0/5, triggering an alarming spike in client churn to nimbler competitors. Concurrently, our elite research analysts are processing thousands of documents monthly completely by hand, resulting in severe professional burnout and a dramatic decline in operational accuracy." — Elena Rodriguez, VP of Product Strategy
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h5 class="font-semibold text-xs uppercase tracking-wider text-slate-500">Target Audience</h5>
+                            <ul class="text-xs text-slate-700 mt-2 space-y-1 list-disc list-inside">
+                                <li>Internal Senior Research Analysts</li>
+                                <li>Sector Leads & Data Sifters</li>
+                                <li>Fortune 500 Strategy Executives</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h5 class="font-semibold text-xs uppercase tracking-wider text-slate-500">Pilot Target KPIs</h5>
+                            <ul class="text-xs text-slate-700 mt-2 space-y-1 list-disc list-inside">
+                                <li>Time-To-Insight: Reduce 72h to &lt;24h</li>
+                                <li>Actionability Score: Boost 3.0 to &gt;4.5/5</li>
+                                <li>Manual Workload: Slashed by 65%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2 CONTAINER -->
+            <section id="step2" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 2</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Persona & Problem Discovery Profile</h2>
+                
+                <div class="flex items-center space-x-4 p-4 bg-slate-50 border border-slate-200 rounded-lg mb-6">
+                    <div class="h-12 w-12 bg-slate-800 text-white font-bold rounded-full flex items-center justify-center">DC</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900">David Chen</h3>
+                        <p class="text-xs text-slate-500">Head of Research & Synthesis • 11 Years Experience</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-sm uppercase text-slate-400 tracking-wider">Jobs-To-Be-Done (JTBD)</h4>
+                        <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mt-1 rounded text-sm text-blue-900">
+                            <strong>Contextual Framework:</strong> When volatile cross-border micro-trends emerge, I need an automated mechanism to instantly cluster unstructured global data blocks, so that my team can publish reliable strategic recommendations in under 24 hours.
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-slate-900 mt-4">Needs Mapping Summary</h4>
+                    <table class="w-full text-left text-sm border-collapse border border-slate-200">
+                        <thead>
+                            <tr class="bg-slate-100">
+                                <th class="p-2 border border-slate-200 font-bold">Functional Needs</th>
+                                <th class="p-2 border border-slate-200 font-bold">Emotional Needs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2 border border-slate-200 text-slate-600">
+                                    • Processing &gt;10,000 multi-source assets/hr<br>
+                                    • Semantic pattern grouping metrics<br>
+                                    • Fully audited citation trace loops
+                                </td>
+                                <td class="p-2 border border-slate-200 text-slate-600">
+                                    • Deep relief from constant information backlog<br>
+                                    • Absolute protection against public hallucinations<br>
+                                    • Shifting focus back to high-prestige analytical output
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- STEP 3 CONTAINER -->
+            <section id="step3" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 3</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Business Value Model & Prioritization Matrix</h2>
+                
+                <h4 class="font-bold text-slate-900 mb-2">Cost-Benefit Analysis Breakdown</h4>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                        <span class="text-xs uppercase tracking-wider text-rose-600 font-bold">Total Pilot Cost Baseline</span>
+                        <p class="text-2xl font-bold text-rose-900 mt-1">$90,000</p>
+                        <p class="text-xs text-rose-700 mt-1">Includes 3x Devs, 1x Prompt Architect, and 25M LLM tokens.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <span class="text-xs uppercase tracking-wider text-emerald-600 font-bold">Net Risk Mitigation Horizon</span>
+                        <p class="text-2xl font-bold text-emerald-900 mt-1">+$360,000</p>
+                        <p class="text-xs text-emerald-700 mt-1">Protects 3 at-risk enterprise accounts ($450K total value).</p>
+                    </div>
+                </div>
+
+                <h4 class="font-bold text-slate-900 mb-2">Strategic Prioritization Framework</h4>
+                <table class="w-full text-left text-xs border-collapse border border-slate-200">
+                    <thead>
+                        <tr class="bg-slate-800 text-white">
+                            <th class="p-2 border">Initiative Component</th>
+                            <th class="p-2 border">User Impact</th>
+                            <th class="p-2 border">Tech Feas.</th>
+                            <th class="p-2 border">Resource Feas.</th>
+                            <th class="p-2 border">Alignment</th>
+                            <th class="p-2 border">Priority Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2 border font-semibold">Initiative A: Semantic Ingestion Space</td>
+                            <td class="p-2 border text-center">5</td>
+                            <td class="p-2 border text-center">4</td>
+                            <td class="p-2 border text-center">4</td>
+                            <td class="p-2 border text-center">5</td>
+                            <td class="p-2 border text-center bg-blue-50 font-bold">4.50</td>
+                        </tr>
+                        <tr class="bg-slate-50">
+                            <td class="p-2 border font-semibold">Initiative B: Bounded RAG Citations</td>
+                            <td class="p-2 border text-center">5</td>
+                            <td class="p-2 border text-center">3</td>
+                            <td class="p-2 border text-center">4</td>
+                            <td class="p-2 border text-center">5</td>
+                            <td class="p-2 border text-center bg-blue-50 font-bold">4.25</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border font-semibold">Initiative C: Opportunity Dashboards</td>
+                            <td class="p-2 border text-center">4</td>
+                            <td class="p-2 border text-center">3</td>
+                            <td class="p-2 border text-center">3</td>
+                            <td class="p-2 border text-center">4</td>
+                            <td class="p-2 border text-center bg-slate-100">3.50</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- STEP 4 CONTAINER -->
+            <section id="step4" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 1</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-4">Mega Persona Prompting & Validation Strategy</h2>
+                
+                <p class="text-sm text-slate-600 mb-4">
+                    To validate our core persona assumptions at scale, copy the production-ready system prompt below directly into an enterprise LLM workspace to simulate synthetic feedback from a cohort of 500 global market research professionals.
+                </p>
+
+                <div class="bg-slate-800 text-slate-200 p-4 rounded-lg font-mono text-xs overflow-x-auto border-l-4 border-emerald-500">
+                    <p class="text-emerald-400 font-bold mb-2">// ENTERPRISE COHORT SIMULATION INSTRUCTION</p>
+                    === START SYSTEM INSTRUCTION ===<br>
+                    You are an expert Enterprise User Research Simulation Engine specializing in B2B SaaS product discovery. Your objective is to simulate a highly realistic, statistically diverse cohort of 500 Market Research Analysts and Research Directors working across global hubs (Singapore, New York, London, Tokyo) within fast-paced market intelligence environments.<br><br>
+                    Your goal is to output a comprehensive dataset representing their deep-seated professional pain points, operational constraints, and technical bottlenecks regarding manual data sifting.<br><br>
+                    Execute the generation using the following structural protocol:<br>
+                    1. Generate 5 distinct, highly granular micro-segments within this cohort.<br>
+                    2. Provide a breakdown of their exact time allocations across an average 60-hour work week.<br>
+                    3. Output 3 distinct raw, unvarnished user feedback quotes capturing their daily operational frustrations.<br>
+                    === END SYSTEM INSTRUCTION ===
+                </div>
+            </section>
+
+            <!-- STEP 5 CONTAINER -->
+            <section id="step5" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 2</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Data-Driven Segmentation & Needs Prioritization</h2>
+                
+                <h3 class="font-bold text-slate-900 mb-3">Macro Segment Urgency Assessment</h3>
+                <div class="space-y-4">
+                    <div class="p-4 border-2 border-blue-500 bg-blue-50/50 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-900 text-sm">1. Consumer Tech & Disruptive Hardware</span>
+                            <span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">Early Adopter Target</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-2">
+                            <strong>Data Velocity:</strong> Extreme • <strong>Baseline TTI:</strong> 76 Hours • <strong>ARR At-Risk Level:</strong> $260,000/yr
+                        </p>
+                        <p class="text-xs text-slate-700 font-medium mt-1">
+                            <strong>Justification:</strong> Rapid product lifecycles render a 72-hour lag obsolete upon delivery. Tech clients demand real-time adaptations and are highly prepared for AI-augmented data workflows.
+                        </p>
+                    </div>
+
+                    <div class="p-4 border border-slate-200 rounded-lg bg-white opacity-60">
+                        <span class="font-bold text-slate-800 text-sm">2. Enterprise Software / B2B SaaS</span>
+                        <p class="text-xs text-slate-500 mt-1">Data Velocity: High • Baseline TTI: 68 Hours • ARR Value: $190,000/yr</p>
+                    </div>
+
+                    <div class="p-4 border border-slate-200 rounded-lg bg-white opacity-60">
+                        <span class="font-bold text-slate-800 text-sm">3. Fast-Moving Consumer Goods (FMCG)</span>
+                        <p class="text-xs text-slate-500 mt-1">Data Velocity: Moderate • Baseline TTI: 52 Hours • ARR Value: $120,000/yr</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 6 CONTAINER -->
+            <section id="step6" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 3</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Experimentation Plan & Feasibility Framework</h2>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-bold font-mono">EXPERIMENT 1</span>
+                        <h4 class="font-bold text-slate-900 mt-1">Analyst Time-Compression Validation</h4>
+                        <p class="text-xs text-slate-600 mt-1"><strong>Hypothesis:</strong> We believe that market research analysts will compress report cycle times by 50% or more without lowering quality when using an automated semantic RAG sifting workspace.</p>
+                        <p class="text-xs text-blue-700 font-semibold mt-1">🎯 Success Target: 85% of test analysts reduce reporting time down to under 30 hours by week 3.</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-bold font-mono">EXPERIMENT 2</span>
+                        <h4 class="font-bold text-slate-900 mt-1">Deterministic Anti-Hallucination Framework Test</h4>
+                        <p class="text-xs text-slate-600 mt-1"><strong>Hypothesis:</strong> We believe that the Head of Research will authorize direct-to-client report delivery when the generation engine is bound by hard context-constraints that ensure zero hallucinated facts.</p>
+                        <p class="text-xs text-emerald-700 font-semibold mt-1">🎯 Success Target: 100% of reports pass internal editorial audit over 4 weeks with exactly zero hallucinations.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 7 CONTAINER -->
+            <section id="step7" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 3: Deliverable 1</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Technical Architecture & Prototype Documentation</h2>
+                
+                <h3 class="font-bold text-slate-900 text-sm uppercase text-slate-400 tracking-wider mb-3">Enterprise Retrieval-Augmented Generation (RAG) Architecture</h3>
+                <div class="p-4 bg-slate-900 text-slate-300 font-mono text-xs rounded-lg overflow-x-auto leading-relaxed">
+                    [Raw Unstructured Inputs] → [Semantic Chunking Engine (512 Size, 64 Overlap)]<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+                    [Target Query] → [Hybrid Retrieval Engine] → [Pinecone Vector DB Index Assets]<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+                    [Prompt-Isolation Box] → [OpenAI gpt-4o Model Layer] → [Analyst Verification Screen]
+                </div>
+
+                <h3 class="font-bold text-slate-900 text-sm mt-6 mb-2">Core Component Selection Matrix</h3>
+                <table class="w-full text-left text-xs border-collapse border border-slate-200">
+                    <thead>
+                        <tr class="bg-slate-100 font-bold">
+                            <th class="p-2 border">Infrastructure Node</th>
+                            <th class="p-2 border">Selection choice</th>
+                            <th class="p-2 border">Technical Justification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2 border font-semibold">Base LLM Engine</td>
+                            <td class="p-2 border font-mono">OpenAI gpt-4o</td>
+                            <td class="p-2 border text-slate-600">Top context window instruction retention limits and low latency profiles.</td>
+                        </tr>
+                        <tr class="bg-slate-50">
+                            <td class="p-2 border font-semibold">Vector Index Storage</td>
+                            <td class="p-2 border font-mono">Pinecone Enterprise</td>
+                            <td class="p-2 border text-slate-600">Fully managed cloud framework, native horizontal scaling, sub-second hybrid lookups.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border font-semibold">Embedding System</td>
+                            <td class="p-2 border font-mono">text-embedding-3-small</td>
+                            <td class="p-2 border text-slate-600">Highly reliable 1536 dimension vector mapping across regional multi-language feeds.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- STEP 8 CONTAINER -->
+            <section id="step8" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 3: Deliverable 2</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Outcome-Driven AI Value Roadmap</h2>
+                
+                <div class="grid grid-cols-3 gap-4 text-xs mb-6">
+                    <div class="p-4 border border-blue-200 bg-blue-50/50 rounded-lg">
+                        <span class="font-bold text-blue-600">Theme 1: Core Pilot MVP</span>
+                        <p class="text-slate-500 mt-1">Days 1–60 • Focus: TTI Compression down to under 30 hours, reversing immediate enterprise contract churn vectors.</p>
+                    </div>
+                    <div class="p-4 border border-slate-200 rounded-lg bg-white">
+                        <span class="font-bold text-slate-700">Theme 2: Scale & Cost</span>
+                        <p class="text-slate-500 mt-1">Days 61–120 • Focus: Optimizing pipeline workers and chunk layouts to cap token costs under $0.08 per file asset.</p>
+                    </div>
+                    <div class="p-4 border border-slate-200 rounded-lg bg-white">
+                        <span class="font-bold text-slate-700">Theme 3: Advanced RAG</span>
+                        <p class="text-slate-500 mt-1">Days 121–180 • Focus: Multi-agent simulations to expand new account pipeline growth patterns.</p>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-slate-900 text-sm mb-2">Executive Alignment Messaging Guide</h3>
+                <div class="space-y-2 text-xs">
+                    <div class="p-2 bg-slate-50 border-l-4 border-slate-800">
+                        <strong>For Sanjay Gupta (CFO):</strong> "The $90,000 investment immediately secures $450,000 in threatened ARR while adding 3x analyst operational bandwidth capabilities without increasing headcount."
+                    </div>
+                    <div class="p-2 bg-slate-50 border-l-4 border-slate-800">
+                        <strong>For David Chen (Head of Research):</strong> "This platform automates raw sifting bottlenecks so your senior researchers can step away from text cleanup tasks and focus on elite strategy curation."
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Simple client-side tab switching script -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab containers
+            document.querySelectorAll('.tab-content').forEach(element => {
+                element.classList.add('hidden');
+            });
+            // Remove active classes from all sidebar links
+            document.querySelectorAll('aside button').forEach(button => {
+                button.classList.remove('active-tab');
+                button.classList.add('text-slate-600', 'hover:bg-slate-50');
+            });
+
+            // Show current target container
+            document.getElementById(tabId).classList.remove('hidden');
+            // Apply active class to current active sidebar element
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('active-tab');
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+        }
+    </script>
+</body>
+</html>
