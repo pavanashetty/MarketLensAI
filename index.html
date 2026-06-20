@@ -1,417 +1,1602 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insightify Copilot - Executive Portal</title>
-    <!-- Tailwind CSS CDN for high-fidelity styling -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>MarketLens - Enterprise GenAI Strategic Market Intelligence Workspace</title>
+    
+    <!-- Tailwind CSS for modern design system -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Space Grotesk for executive typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            deep: '#030a10',
+                            slate: '#081421',
+                            card: '#0d1d30',
+                            teal: '#14b8a6',
+                            emerald: '#10b981',
+                            neonCyan: '#00f5d4',
+                            glowBlue: '#0ea5e9',
+                            darkText: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        .active-tab {
-            border-left: 4px solid #2563eb;
-            background-color: #f1f5f9;
-            color: #1e40af;
-            font-weight: 600;
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030a10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d1d30;
+            border-radius: 4px;
+            border: 2px solid #030a10;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #14b8a6;
+        }
+        .neon-glow-teal {
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.25);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.35);
+        }
+        .text-glow-cyan {
+            text-shadow: 0 0 12px rgba(0, 245, 212, 0.5);
+        }
+        .glass-panel {
+            background: rgba(13, 29, 48, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(20, 184, 166, 0.15);
+        }
+        .card-active {
+            border-color: #14b8a6 !important;
+            background: rgba(20, 184, 166, 0.05) !important;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<body class="bg-brand-deep text-slate-100 font-sans h-full overflow-hidden flex flex-col selection:bg-brand-teal selection:text-brand-deep">
 
-    <!-- Header / Global Status Bar -->
-    <header class="bg-slate-900 text-white px-6 py-4 fixed top-0 left-0 right-0 z-50 flex justify-between items-center shadow-md">
+    <!-- GLOBAL EXECUTIVE NAVIGATION HEADER -->
+    <header class="flex-none h-16 bg-brand-slate border-b border-slate-800 px-6 flex items-center justify-between z-30">
         <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 p-2 rounded text-white font-bold tracking-wider text-sm">MMG</div>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-teal to-brand-glowBlue p-[1.5px]">
+                <div class="w-full h-full bg-brand-deep rounded-[10px] flex items-center justify-center">
+                    <i data-lucide="eye" class="w-4.5 h-4.5 text-brand-neonCyan"></i>
+                </div>
+            </div>
             <div>
-                <h1 class="text-lg font-bold">Insightify Copilot™ Portal</h1>
-                <p class="text-xs text-slate-400">MarketMinds Global (Singapore) • 60-Day Pilot Tracker</p>
+                <span class="font-space font-bold text-lg tracking-tight text-white">MarketLens</span>
+                <span class="text-[9px] block text-brand-teal font-mono tracking-wider uppercase font-semibold">EMBA Generative AI Portfolio</span>
             </div>
         </div>
+
         <div class="flex items-center space-x-4">
-            <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 font-medium">
-                ● Pilot Status: Active (Day 1)
-            </span>
-            <span class="text-xs text-slate-400">Authored by: Principal GenAI PM</span>
+            <div class="hidden lg:flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1 font-mono text-[10px] text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Workspace Active</span>
+            </div>
+            
+            <!-- Global Mode Switcher: Dashboard Mode vs Slideshow Mode -->
+            <div class="flex bg-slate-900 border border-slate-800 p-0.5 rounded-lg font-mono text-[11px] font-bold">
+                <button id="btn-mode-dashboard" onclick="setGlobalMode('dashboard')" class="px-4 py-1.5 rounded-md text-brand-neonCyan bg-brand-card transition flex items-center space-x-1.5">
+                    <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                    <span>Portfolio Hub</span>
+                </button>
+                <button id="btn-mode-deck" onclick="setGlobalMode('deck')" class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                    <i data-lucide="presentation" class="w-3.5 h-3.5"></i>
+                    <span>Slide Deck</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Main Workspace Layout -->
-    <div class="flex pt-16 min-h-screen">
+    <!-- MAIN INTERACTIVE WORKSPACE LAYOUT -->
+    <div class="flex-grow flex overflow-hidden relative">
         
-        <!-- Interactive Sidebar Navigation -->
-        <aside class="w-80 bg-white border-r border-slate-200 fixed top-16 bottom-0 left-0 overflow-y-auto p-4 space-y-6">
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 1: Alignment</p>
-                <nav class="space-y-1">
-                    <button onclick="switchTab('step1')" id="btn-step1" class="w-full text-left px-3 py-2 text-sm rounded transition active-tab">
-                        1. Product Brief & 1-Pager
-                    </button>
-                    <button onclick="switchTab('step2')" id="btn-step2" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        2. Persona & JTBD Discoveries
-                    </button>
-                    <button onclick="switchTab('step3')" id="btn-step3" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        3. Business Value & CBA Matrix
-                    </button>
-                </nav>
+        <!-- SIDEBAR DIRECTORY NAVIGATION -->
+        <aside class="w-64 bg-slate-950 border-r border-slate-900 flex-none hidden md:flex flex-col justify-between">
+            <div class="p-4 space-y-6 overflow-y-auto flex-grow">
+                <div>
+                    <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase block mb-3 px-3">Primary Deliverables</span>
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('tab-brand')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-brand-teal bg-brand-card border-l-2 border-brand-teal transition text-left" data-tab="tab-brand">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                            <span>1. MMG Brand & Team</span>
+                        </button>
+                        <button onclick="switchTab('tab-problem')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-problem">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                            <span>2. Problem Discovery</span>
+                        </button>
+                        <button onclick="switchTab('tab-persona')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-persona">
+                            <i data-lucide="user-check" class="w-4 h-4"></i>
+                            <span>3. Persona & Audience</span>
+                        </button>
+                        <button onclick="switchTab('tab-cba')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-cba">
+                            <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                            <span>4. Value Model & CBA</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div>
+                    <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase block mb-3 px-3">Validation & Dev</span>
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('tab-segmentation')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-segmentation">
+                            <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                            <span>5. Entry Segmentation</span>
+                        </button>
+                        <button onclick="switchTab('tab-matrix')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-matrix">
+                            <i data-lucide="check-square" class="w-4 h-4"></i>
+                            <span>6. Functionality Matrix</span>
+                        </button>
+                        <button onclick="switchTab('tab-experiments')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-experiments">
+                            <i data-lucide="flask" class="w-4 h-4"></i>
+                            <span>7. Pilot Experiments</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div>
+                    <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase block mb-3 px-3">Architecture & Live Sandbox</span>
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('tab-architecture')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-architecture">
+                            <i data-lucide="git-branch" class="w-4 h-4"></i>
+                            <span>8. Hybrid RAG Pipeline</span>
+                        </button>
+                        <button onclick="switchTab('tab-sandbox')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-sandbox">
+                            <i data-lucide="terminal" class="w-4 h-4"></i>
+                            <span>9. Live Sandbox Ingestion</span>
+                        </button>
+                        <button onclick="switchTab('tab-roadmap')" class="nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left" data-tab="tab-roadmap">
+                            <i data-lucide="map" class="w-4 h-4"></i>
+                            <span>10. MVP Value Roadmap</span>
+                        </button>
+                    </nav>
+                </div>
             </div>
 
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 2: Validation</p>
-                <nav class="space-y-1">
-                    <button onclick="switchTab('step4')" id="btn-step4" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        4. Mega Persona & Survey Prompts
-                    </button>
-                    <button onclick="switchTab('step5')" id="btn-step5" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        5. Segmentation & Early Adopters
-                    </button>
-                    <button onclick="switchTab('step6')" id="btn-step6" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        6. Feasibility Experimentation
-                    </button>
-                </nav>
-            </div>
-
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Phase 3: Prototyping & Scale</p>
-                <nav class="space-y-1">
-                    <button onclick="switchTab('step7')" id="btn-step7" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        7. RAG Technical Architecture
-                    </button>
-                    <button onclick="switchTab('step8')" id="btn-step8" class="w-full text-left px-3 py-2 text-sm rounded text-slate-600 hover:bg-slate-50 transition">
-                        8. Outcome-Driven Value Roadmap
-                    </button>
-                </nav>
+            <!-- Global Footer Context info inside Sidebar -->
+            <div class="p-4 border-t border-slate-900 font-mono text-[9px] text-slate-500 space-y-1">
+                <p>Singapore HQ Hub</p>
+                <p>MarketMinds Global © 2026</p>
+                <p class="text-[8px] text-slate-600">EMBA 2024B CCE Delivery</p>
             </div>
         </aside>
 
-        <!-- Dynamic Content Display Panel -->
-        <main class="flex-1 ml-80 p-8 bg-slate-50 overflow-y-auto max-w-5xl">
+        <!-- MAIN INTERACTIVE PORTFOLIO WORKSPACE VIEW -->
+        <main id="portfolio-workspace-view" class="flex-grow p-6 md:p-8 overflow-y-auto h-full space-y-8 bg-gradient-to-b from-brand-slate to-brand-deep">
             
-            <!-- STEP 1 CONTAINER -->
-            <section id="step1" class="tab-content bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 1</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Product Idea Brief & "Working Backwards" 1-Pager</h2>
-                
-                <div class="bg-slate-900 text-slate-100 p-4 rounded-lg mb-6 border-l-4 border-blue-500">
-                    <p class="text-xs uppercase text-slate-400 font-semibold tracking-wider">Internal Press Release</p>
-                    <h3 class="text-lg font-bold text-white mt-1">MarketMinds Global Launches "Insightify" Copilot to Eliminate 72-Hour Bottleneck</h3>
+            <!-- TAB 1: BRAND PROFILE & THE EXECUTIVE ADVISORY BOARD -->
+            <section id="tab-brand" class="tab-content space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-5 gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 1.1: Brand Portfolio Context</span>
+                        <h1 class="text-3xl md:text-4xl font-space font-bold text-white tracking-tight">MarketMinds Global Workspace</h1>
+                    </div>
+                    <div class="flex space-x-2">
+                        <span class="px-3 py-1 bg-teal-950/40 text-brand-neonCyan border border-teal-500/30 rounded font-mono text-[10px] font-bold uppercase flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Singapore HQ
+                        </span>
+                    </div>
                 </div>
 
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="font-bold text-slate-900">Summary</h4>
-                        <p class="text-sm text-slate-600 mt-1 leading-relaxed">
-                            MarketMinds Global today announced the internal rollout and 60-day customer pilot of Insightify Copilot, an advanced Generative AI-powered workspace engineered specifically for market research analysts. By integrating real-time ingestion pipelines with a hyper-secure Retrieval-Augmented Generation (RAG) architecture, Insightify automates the manual sifting of millions of unstructured data points—including global news, social media chatter, analyst reports, and forum discussions. The platform compresses the current 72-hour comprehensive report lifecycle to under 24 hours, completely eliminating analyst burnout and elevating client insight actionability back to elite tier performance standards.
-                        </p>
-                    </div>
-
-                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                        <h4 class="font-bold text-amber-900 flex items-center">⚠️ Problem Statement</h4>
-                        <p class="text-sm text-amber-800 italic mt-1">
-                            "Our current market intelligence engine is bottlenecked by manual data processing, causing our Time-to-Insight metric to balloon from 24 hours to an unacceptable 72 hours over the last six months. This operational lag has caused our client Actionability Score to plummet from 4.5/5 to 3.0/5, triggering an alarming spike in client churn to nimbler competitors. Concurrently, our elite research analysts are processing thousands of documents monthly completely by hand, resulting in severe professional burnout and a dramatic decline in operational accuracy." — Elena Rodriguez, VP of Product Strategy
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                            <h5 class="font-semibold text-xs uppercase tracking-wider text-slate-500">Target Audience</h5>
-                            <ul class="text-xs text-slate-700 mt-2 space-y-1 list-disc list-inside">
-                                <li>Internal Senior Research Analysts</li>
-                                <li>Sector Leads & Data Sifters</li>
-                                <li>Fortune 500 Strategy Executives</li>
-                            </ul>
+                <!-- Company profile stats layout -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 bg-teal-950/40 rounded-xl text-brand-teal"><i data-lucide="building" class="w-6 h-6"></i></div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block">Industry Segment</span>
+                            <span class="text-xs font-bold text-white block mt-0.5">B2B Strategic Research</span>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                            <h5 class="font-semibold text-xs uppercase tracking-wider text-slate-500">Pilot Target KPIs</h5>
-                            <ul class="text-xs text-slate-700 mt-2 space-y-1 list-disc list-inside">
-                                <li>Time-To-Insight: Reduce 72h to &lt;24h</li>
-                                <li>Actionability Score: Boost 3.0 to &gt;4.5/5</li>
-                                <li>Manual Workload: Slashed by 65%</li>
-                            </ul>
+                    </div>
+                    <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 bg-teal-950/40 rounded-xl text-brand-glowBlue"><i data-lucide="users" class="w-6 h-6"></i></div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block">Client Profile Base</span>
+                            <span class="text-xs font-bold text-white block mt-0.5">Fortune 500 Enterprises</span>
+                        </div>
+                    </div>
+                    <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 bg-teal-950/40 rounded-xl text-emerald-400"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block">Growth Phase</span>
+                            <span class="text-xs font-bold text-white block mt-0.5">Rapid Global Scale</span>
+                        </div>
+                    </div>
+                    <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 bg-teal-950/40 rounded-xl text-purple-400"><i data-lucide="shield-alert" class="w-6 h-6"></i></div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block">Core Challenge</span>
+                            <span class="text-xs font-bold text-white block mt-0.5">12% Customer Churn Rate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Executive Team Alignment bio metrics -->
+                <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-8 opacity-5">
+                        <i data-lucide="award" class="w-60 h-60 text-brand-teal"></i>
+                    </div>
+                    
+                    <h3 class="text-xl font-space font-bold text-white mb-6">Strategic Product Development Advisory Team</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-tr from-brand-teal to-brand-glowBlue rounded-xl p-[1.5px]">
+                                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-bold text-white">DS</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-space font-bold text-white text-sm">Deepti Sharma</h4>
+                                    <span class="text-[10px] text-brand-teal font-mono uppercase font-semibold">AI Strategist Lead</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Leads semantic validation frameworks, model alignments, and context verification bounds.
+                            </p>
+                            <span class="inline-block text-[10px] text-slate-500 font-mono">deepti.sharma@alumni.ipl.university</span>
+                        </div>
+
+                        <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-tr from-brand-teal to-brand-glowBlue rounded-xl p-[1.5px]">
+                                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-bold text-white">PS</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-space font-bold text-white text-sm">Pavana Shetty</h4>
+                                    <span class="text-[10px] text-brand-teal font-mono uppercase font-semibold">Product Leader</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Manages product requirements pipelines, cost structures, and workflow telemetry models.
+                            </p>
+                            <span class="inline-block text-[10px] text-slate-500 font-mono">pavana.shetty@alumni.ipl.university</span>
+                        </div>
+
+                        <div class="bg-brand-card p-5 rounded-2xl border border-slate-800 space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-tr from-brand-teal to-brand-glowBlue rounded-xl p-[1.5px]">
+                                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-bold text-white">PS</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-space font-bold text-white text-sm">Priya S</h4>
+                                    <span class="text-[10px] text-brand-teal font-mono uppercase font-semibold">GTM Strategist</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Oversees client retention mechanics, pricing policies, and beachhead segments.
+                            </p>
+                            <span class="inline-block text-[10px] text-slate-500 font-mono">priya.pandian@alumni.ipl.university</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- STEP 2 CONTAINER -->
-            <section id="step2" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 2</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Persona & Problem Discovery Profile</h2>
-                
-                <div class="flex items-center space-x-4 p-4 bg-slate-50 border border-slate-200 rounded-lg mb-6">
-                    <div class="h-12 w-12 bg-slate-800 text-white font-bold rounded-full flex items-center justify-center">DC</div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-900">David Chen</h3>
-                        <p class="text-xs text-slate-500">Head of Research & Synthesis • 11 Years Experience</p>
+            <!-- TAB 2: PROBLEM DISCOVERY & COGNITIVE BUSINESS ALIGNMENT -->
+            <section id="tab-problem" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 1.2: Problem Discovery</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">The Competitive Gap & Churn Catalyst</h1>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Pain Points breakdown -->
+                    <div class="bg-red-950/10 border border-red-500/20 p-6 rounded-2xl space-y-6">
+                        <div class="flex items-center space-x-3">
+                            <span class="p-2 bg-red-900/20 rounded-lg text-red-400"><i data-lucide="trending-down" class="w-6 h-6"></i></span>
+                            <h3 class="text-lg font-space font-bold text-red-200">The Problem Vector</h3>
+                        </div>
+                        <ul class="space-y-4 text-xs font-mono text-slate-300">
+                            <li class="flex items-start space-x-3">
+                                <span class="text-red-500 font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">Manual Sifting Latency:</strong>
+                                    It takes 72 hours of manual analyst sifting through news, financial filings, and trade sheets to compile comprehensive intelligence reports.
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-red-500 font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">Strategic Information Blind Spots:</strong>
+                                    Opportunities and competitive threats are detected too late, providing retrospective rather than predictive foresight.
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-red-500 font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">Analyst Burnout Loop:</strong>
+                                    Overwhelming information fatigue forces analysts to spend 40-50% of their billable hours on simple mechanical data extraction.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- MarketLens Solution alignment -->
+                    <div class="bg-teal-950/10 border border-teal-500/20 p-6 rounded-2xl space-y-6">
+                        <div class="flex items-center space-x-3">
+                            <span class="p-2 bg-teal-900/20 rounded-lg text-brand-teal"><i data-lucide="check-circle" class="w-6 h-6"></i></span>
+                            <h3 class="text-lg font-space font-bold text-brand-teal">The MarketLens Resolution</h3>
+                        </div>
+                        <ul class="space-y-4 text-xs font-mono text-slate-300">
+                            <li class="flex items-start space-x-3">
+                                <span class="text-brand-neonCyan font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">Automated Multi-Source Scraper:</strong>
+                                    Instantly aggregates and filters structured and unstructured data across news networks, filings, publications, and social conversations.
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-brand-neonCyan font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">RAG Real-Time Synthesis:</strong>
+                                    Reduces Time-to-Insight (TTI) down from 72 hours to under 24 hours (and under 15 minutes for targeted queries) using semantic embeddings.
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-brand-neonCyan font-bold">&bull;</span>
+                                <div>
+                                    <strong class="text-white block mb-0.5">Explainable Citations:</strong>
+                                    Enforces source validation through a dedicated citation attribution layer, completely bypassing the risks of factual hallucination.
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="font-bold text-sm uppercase text-slate-400 tracking-wider">Jobs-To-Be-Done (JTBD)</h4>
-                        <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mt-1 rounded text-sm text-blue-900">
-                            <strong>Contextual Framework:</strong> When volatile cross-border micro-trends emerge, I need an automated mechanism to instantly cluster unstructured global data blocks, so that my team can publish reliable strategic recommendations in under 24 hours.
+                <!-- 3 Strategic Questions Alignment -->
+                <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <h3 class="text-base font-space font-bold text-white">Three Critical Framework Questions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-[11px] leading-relaxed">
+                        <div class="p-4 bg-slate-950/40 rounded-xl border border-slate-900">
+                            <span class="text-brand-teal font-bold block mb-1">1. WHAT NEEDS TO CHANGE?</span>
+                            <p class="text-slate-400">Manual mechanical synthesis, retrospective reporting, late identification of trends, and the massive billable hours leak on repetitive document sifting.</p>
+                        </div>
+                        <div class="p-4 bg-slate-950/40 rounded-xl border border-slate-900">
+                            <span class="text-brand-glowBlue font-bold block mb-1">2. WHAT WILL REMAIN?</span>
+                            <p class="text-slate-400">Trusted expert domain knowledge, analyst-led rigorous verification protocols, human oversight, and the high prestige client relationship paradigm.</p>
+                        </div>
+                        <div class="p-4 bg-slate-950/40 rounded-xl border border-slate-900">
+                            <span class="text-emerald-400 font-bold block mb-1">3. WHAT'S NEWLY POSSIBLE?</span>
+                            <p class="text-slate-400">Real-time predictive trend detection, automated white-space discovery trackers, and instant cited threat briefs compiled on demand by GenAI pipelines.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: USER PERSONAS & EMPATHY MAPPING -->
+            <section id="tab-persona" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 1.3: User Persona</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Primary Persona: Strategic Sarah</h1>
+                </div>
+
+                <!-- Strategic Sarah Detailed Empathy Map -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    <div class="lg:col-span-4 bg-brand-card rounded-2xl border border-slate-800 p-6 flex flex-col justify-between">
+                        <div class="text-center space-y-4">
+                            <div class="relative w-28 h-28 mx-auto rounded-full p-[2.5px] bg-gradient-to-tr from-brand-teal to-brand-glowBlue">
+                                <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center overflow-hidden">
+                                    <!-- Fallback profile avatar icon representation -->
+                                    <i data-lucide="user" class="w-14 h-14 text-brand-neonCyan"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-space font-bold text-xl text-white">Strategic Sarah</h3>
+                                <span class="text-xs font-mono text-brand-teal font-semibold">VP Strategy / Corporate Growth</span>
+                            </div>
+                            <blockquote class="text-slate-400 text-xs italic leading-relaxed">
+                                "I need intelligence that helps us anticipate the future and act before our competitors do."
+                            </blockquote>
+                        </div>
+
+                        <div class="border-t border-slate-800/80 pt-4 mt-6 space-y-2 font-mono text-[11px]">
+                            <div class="flex justify-between"><span class="text-slate-500">ORG SIZE:</span><span class="text-white">5,000-10,000 Employees</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">ANNUAL REV:</span><span class="text-white">$1B - $5B+</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">TECH LEVEL:</span><span class="text-white">High (Heavy Analytics)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">AI SENTIMENT:</span><span class="text-white">Extremely Positive</span></div>
                         </div>
                     </div>
 
-                    <h4 class="font-bold text-slate-900 mt-4">Needs Mapping Summary</h4>
-                    <table class="w-full text-left text-sm border-collapse border border-slate-200">
-                        <thead>
-                            <tr class="bg-slate-100">
-                                <th class="p-2 border border-slate-200 font-bold">Functional Needs</th>
-                                <th class="p-2 border border-slate-200 font-bold">Emotional Needs</th>
+                    <div class="lg:col-span-8 bg-brand-card rounded-2xl border border-slate-800 p-6 md:p-8 flex flex-col justify-between">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h4 class="font-space font-bold text-sm text-brand-teal flex items-center gap-1.5"><i data-lucide="target" class="w-4 h-4"></i> Goals & Aspirations</h4>
+                                <ul class="text-xs font-mono text-slate-300 space-y-2 leading-relaxed">
+                                    <li>&bull; Early discovery of strategic white spaces.</li>
+                                    <li>&bull; Making big, high-contrast expansion decisions with data-backed source confidence.</li>
+                                    <li>&bull; Anticipating technology pivots ahead of standard market disruption.</li>
+                                </ul>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h4 class="font-space font-bold text-sm text-red-400 flex items-center gap-1.5"><i data-lucide="frown" class="w-4 h-4"></i> Frustrations</h4>
+                                <ul class="text-xs font-mono text-slate-300 space-y-2 leading-relaxed">
+                                    <li>&bull; Intelligence reports are compiled too late to capture windows.</li>
+                                    <li>&bull; Information overload with no direct action outlines.</li>
+                                    <li>&bull; High anxiety over invented facts or unverified trend predictions.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Functional, Emotional, Social mapping of needs -->
+                        <div class="border-t border-slate-800/80 pt-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px] font-mono">
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-900">
+                                <span class="text-brand-teal font-bold block mb-1">FUNCTIONAL</span>
+                                <p class="text-slate-400">Real-time predictive intelligence feeds; accelerated multi-source document sifting and summarize mechanisms.</p>
+                            </div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-900">
+                                <span class="text-brand-glowBlue font-bold block mb-1">EMOTIONAL</span>
+                                <p class="text-slate-400">Complete confidence in high-risk strategic choices; elimination of data overload anxiety.</p>
+                            </div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-900">
+                                <span class="text-emerald-400 font-bold block mb-1">SOCIAL</span>
+                                <p class="text-slate-400">Strengthening board-level executive authority; driving robust organizational consensus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: FINANCIAL BUSINESS VALUE MODEL & CBA -->
+            <section id="tab-cba" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 1.4 & 1.5: Viability Model</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">12-Month Financial Alignment</h1>
+                </div>
+
+                <!-- Cost Benefit Analysis overview cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block mb-2">Total CapEx Development</span>
+                        <h4 class="text-3xl font-space font-bold text-brand-teal">$400,000</h4>
+                        <ul class="text-[10px] font-mono text-slate-500 mt-4 space-y-1">
+                            <li>Product Management: $60K</li>
+                            <li>AI / Data Engineering: $260K</li>
+                            <li>UX Design & Security Compliance: $80K</li>
+                        </ul>
+                    </div>
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block mb-2">Annual OpEx Maintenance</span>
+                        <h4 class="text-3xl font-space font-bold text-brand-glowBlue">$140,000</h4>
+                        <ul class="text-[10px] font-mono text-slate-500 mt-4 space-y-1">
+                            <li>LLM Context API Consumption: $80K</li>
+                            <li>Vector Store Database Hosting: $20K</li>
+                            <li>Security Audits & Monitoring Layer: $40K</li>
+                        </ul>
+                    </div>
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] text-slate-400 font-mono uppercase tracking-wider block mb-2">Target Annualized Gains</span>
+                        <h4 class="text-3xl font-space font-bold text-emerald-400">$1,250,000</h4>
+                        <ul class="text-[10px] font-mono text-slate-500 mt-4 space-y-1">
+                            <li>ARR Retained Churn: $400K</li>
+                            <li>Analyst Workflow Savings: $750K</li>
+                            <li>Premium Feature Upsell: $100K</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Dynamic CBA Parameter Simulator -->
+                <div class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 md:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-5 space-y-6">
+                            <h3 class="text-lg font-space font-bold text-white">Dynamic ROI Feasibility Simulator</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed font-mono">
+                                Optimize the cost values to see live impacts on the net project yield, payback period, and BCR. Perfect for CFO alignments.
+                            </p>
+                            
+                            <div class="space-y-4 text-xs font-mono">
+                                <div>
+                                    <label class="flex justify-between text-slate-300 mb-1.5">
+                                        <span>Initial Development CapEx:</span>
+                                        <span class="text-brand-teal font-bold">$<span id="roi-dev-lbl">400</span>,000</span>
+                                    </label>
+                                    <input type="range" id="roi-dev-input" min="200" max="600" step="10" value="400" class="w-full accent-brand-teal bg-slate-800 rounded-lg appearance-none h-2 cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between text-slate-300 mb-1.5">
+                                        <span>Annual Operating OpEx:</span>
+                                        <span class="text-brand-glowBlue font-bold">$<span id="roi-opex-lbl">140</span>,000</span>
+                                    </label>
+                                    <input type="range" id="roi-opex-input" min="50" max="250" step="10" value="140" class="w-full accent-brand-glowBlue bg-slate-800 rounded-lg appearance-none h-2 cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between text-slate-300 mb-1.5">
+                                        <span>Total Annual Benefits:</span>
+                                        <span class="text-emerald-400 font-bold">$<span id="roi-benefit-lbl">1250</span>,000</span>
+                                    </label>
+                                    <input type="range" id="roi-benefit-input" min="600" max="2000" step="50" value="1250" class="w-full accent-emerald-400 bg-slate-800 rounded-lg appearance-none h-2 cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live computed calculations panel -->
+                        <div class="lg:col-span-7 bg-slate-950 border border-slate-900 rounded-2xl p-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
+                                <div class="bg-brand-card/40 border border-slate-800 p-4 rounded-xl">
+                                    <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block">Year 1 Net Benefit</span>
+                                    <h5 class="text-xl font-space font-bold text-white mt-1">$<span id="roi-net-val">710,000</span></h5>
+                                </div>
+                                <div class="bg-brand-card/40 border border-slate-800 p-4 rounded-xl">
+                                    <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block">Benefit-Cost Ratio</span>
+                                    <h5 class="text-xl font-space font-bold text-brand-neonCyan mt-1"><span id="roi-ratio-val">2.3</span>x</h5>
+                                </div>
+                                <div class="bg-brand-card/40 border border-slate-800 p-4 rounded-xl">
+                                    <span class="text-[9px] text-slate-500 font-mono uppercase tracking-wider block">Payback Horizon</span>
+                                    <h5 class="text-xl font-space font-bold text-emerald-400 mt-1"><span id="roi-payback-val">10-12</span> Mos</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="w-full bg-slate-900 border border-slate-800 p-4 rounded-xl font-mono text-[11px] text-slate-400 space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Implied Cost of Inaction:</span>
+                                    <span class="text-red-400 font-bold">$18,000,000 ARR At Risk</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 leading-relaxed italic">
+                                    *Note: If no action is taken, typical churn vectors forecast a 4-point contraction over MMG's baseline $10M ARR within the coming fiscal period.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: DATA-DRIVEN SEGMENTATION & K-MEANS -->
+            <section id="tab-segmentation" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 2.2: Customer Segmentation</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">K-Means Cluster Matrix Map</h1>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Dynamic Interactive SVG Scatter Plot -->
+                    <div class="lg:col-span-7 bg-slate-950 p-6 rounded-3xl border border-slate-900 space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-4">
+                            <div>
+                                <h3 class="font-space font-bold text-white text-sm">Optimal Clusters (K=4)</h3>
+                                <p class="text-[11px] text-slate-400 font-mono mt-0.5">Elbow Method inertia indicates K=4 optimization inflection point.</p>
+                            </div>
+                            <span class="px-2 py-0.5 bg-teal-950/40 text-brand-neonCyan border border-teal-500/20 rounded font-mono text-[9px] uppercase font-bold tracking-wider">Early Adopter Match</span>
+                        </div>
+
+                        <!-- Scatter graph canvas framework implemented in interactive SVG -->
+                        <div class="relative aspect-square w-full bg-slate-900/60 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between overflow-hidden">
+                            
+                            <!-- Plot lines representation -->
+                            <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 pointer-events-none z-0">
+                                <div class="border-r border-b border-slate-800/60"></div>
+                                <div class="border-b border-slate-800/60"></div>
+                                <div class="border-r border-slate-800/60"></div>
+                                <div></div>
+                            </div>
+
+                            <!-- Cluster points rendered within relative positions -->
+                            <div class="absolute inset-0 z-10 p-12">
+                                <!-- Top Right: Strategic Accelerators -->
+                                <button onclick="selectKmeansSegment('accelerators')" class="absolute top-[20%] right-[20%] w-12 h-12 bg-brand-teal/20 border-2 border-brand-teal rounded-full flex flex-col items-center justify-center text-brand-neonCyan focus:outline-none focus:ring-4 focus:ring-brand-teal/50 hover:scale-110 transition duration-300 group" title="Strategic Accelerators">
+                                    <i data-lucide="star" class="w-5 h-5 group-hover:rotate-12 transition"></i>
+                                    <span class="absolute -bottom-4 text-[9px] font-mono text-slate-400 font-bold whitespace-nowrap bg-slate-950/90 px-1 rounded">S4: Sweet Spot</span>
+                                </button>
+
+                                <!-- Top Left: Tactical Executors -->
+                                <button onclick="selectKmeansSegment('executors')" class="absolute top-[25%] left-[20%] w-10 h-10 bg-amber-500/10 border-2 border-amber-500 rounded-full flex items-center justify-center text-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-500/50 hover:scale-110 transition duration-300 group" title="Tactical Executors">
+                                    <i data-lucide="zap" class="w-4 h-4"></i>
+                                    <span class="absolute -bottom-4 text-[9px] font-mono text-slate-500 whitespace-nowrap bg-slate-950/80 px-1 rounded">S3: Tactical</span>
+                                </button>
+
+                                <!-- Bottom Right: Strategic Observers -->
+                                <button onclick="selectKmeansSegment('observers')" class="absolute bottom-[25%] right-[20%] w-10 h-10 bg-blue-500/10 border-2 border-blue-500 rounded-full flex items-center justify-center text-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/50 hover:scale-110 transition duration-300 group" title="Strategic Observers">
+                                    <i data-lucide="compass" class="w-4 h-4"></i>
+                                    <span class="absolute -bottom-4 text-[9px] font-mono text-slate-500 whitespace-nowrap bg-slate-950/80 px-1 rounded">S1: Observers</span>
+                                </button>
+
+                                <!-- Bottom Left: Intelligence Monitors -->
+                                <button onclick="selectKmeansSegment('monitors')" class="absolute bottom-[20%] left-[20%] w-10 h-10 bg-slate-600/10 border-2 border-slate-600 rounded-full flex items-center justify-center text-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-500/50 hover:scale-110 transition duration-300 group" title="Intelligence Monitors">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    <span class="absolute -bottom-4 text-[9px] font-mono text-slate-500 whitespace-nowrap bg-slate-950/80 px-1 rounded">S2: Monitors</span>
+                                </button>
+                            </div>
+
+                            <!-- Plot axis tags and indicators -->
+                            <div class="flex justify-between text-[9px] font-mono text-slate-500 tracking-wider z-10 select-none">
+                                <span>REACTIVE COGNITION</span>
+                                <span>PROACTIVE DECISIONS</span>
+                            </div>
+                            <div class="flex justify-between items-end text-[9px] font-mono text-slate-500 tracking-wider z-10 select-none">
+                                <span>RETROSPECTIVE REPORTING</span>
+                                <span>PREDICTIVE FORESIGHT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segment detailed description explorer panel -->
+                    <div class="lg:col-span-5 h-full">
+                        <div id="segment-details-box" class="bg-brand-card p-6 rounded-3xl border border-slate-800 min-h-[420px] flex flex-col justify-between">
+                            
+                            <!-- Initial prompt view state -->
+                            <div id="segment-prompt-view" class="space-y-4">
+                                <div class="w-12 h-12 rounded-2xl bg-brand-teal/10 flex items-center justify-center text-brand-teal">
+                                    <i data-lucide="mouse-pointer-click" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-space font-bold text-lg text-white">Segment Inspector Pane</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                    Select any cluster node coordinate on the K-Means matrix to load target behavioral indices, user archetype profiles, buying friction levels, and value conversions.
+                                </p>
+                            </div>
+
+                            <!-- Interactive detailed view state -->
+                            <div id="segment-display-view" class="hidden space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span id="seg-badge" class="px-2.5 py-0.5 rounded font-mono text-[9px] uppercase font-bold bg-brand-teal/20 text-brand-neonCyan">Beachhead Focus</span>
+                                    <span id="seg-archetype" class="text-xs font-mono text-slate-400">Strategic Seekers</span>
+                                </div>
+                                <h3 id="seg-title" class="font-space font-bold text-xl text-white">Strategic Accelerators</h3>
+                                <p id="seg-desc" class="text-xs text-slate-300 leading-relaxed">
+                                    Combines strong future sight and aggressive action orientation. These buyers represent our primary target beachhead profile, exhibiting urgent pressure to adopt GenAI accelerators.
+                                </p>
+                                
+                                <div class="border-t border-slate-800/80 pt-4 space-y-2.5 font-mono text-xs">
+                                    <div class="flex justify-between"><span class="text-slate-500">USER ALIGNMENT:</span><span id="seg-user" class="text-white font-bold">Sarah Profile</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500"> friction LEVEL:</span><span id="seg-friction" class="text-white font-bold">Minimal (High Urgency)</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">WILLINGNESS TO PAY:</span><span id="seg-wtp" class="text-brand-teal font-bold">EXCELLENT (Immediate)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: PRODUCT FUNCTIONALITY SCORING MATRIX -->
+            <section id="tab-matrix" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 2.1: Prioritization Analysis</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Capabilities Prioritization Matrix</h1>
+                </div>
+
+                <div class="overflow-x-auto bg-slate-950 rounded-2xl border border-slate-900">
+                    <table class="w-full text-left font-mono text-xs text-slate-300">
+                        <thead class="bg-brand-card/60 text-slate-400 border-b border-slate-800 text-[10px] uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4">Product Feature Block</th>
+                                <th class="p-4 text-center">Customer Value</th>
+                                <th class="p-4 text-center">Business Value</th>
+                                <th class="p-4 text-center">Strategic Alignment</th>
+                                <th class="p-4 text-center">Feasibility Score</th>
+                                <th class="p-4 text-center">Moat Factor</th>
+                                <th class="p-4 text-right">Aggregate Prioritization</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-slate-900">
+                            <!-- Feature Rows -->
                             <tr>
-                                <td class="p-2 border border-slate-200 text-slate-600">
-                                    • Processing &gt;10,000 multi-source assets/hr<br>
-                                    • Semantic pattern grouping metrics<br>
-                                    • Fully audited citation trace loops
+                                <td class="p-4 font-sans font-bold text-white">
+                                    AI Insight Synthesis Engine
+                                    <span class="block text-[9px] font-mono font-normal text-slate-500 mt-0.5">Automated multi-source report compiler</span>
                                 </td>
-                                <td class="p-2 border border-slate-200 text-slate-600">
-                                    • Deep relief from constant information backlog<br>
-                                    • Absolute protection against public hallucinations<br>
-                                    • Shifting focus back to high-prestige analytical output
+                                <td class="p-4 text-center text-brand-teal">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-right font-space font-bold text-brand-neonCyan">24 / 25</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-sans font-bold text-white">
+                                    Predictive Trend Detection Engine
+                                    <span class="block text-[9px] font-mono font-normal text-slate-500 mt-0.5">Identifies early weak market signals</span>
                                 </td>
+                                <td class="p-4 text-center text-brand-teal">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-right font-space font-bold text-brand-neonCyan">24 / 25</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-sans font-bold text-white">
+                                    Source Attribution & Citations
+                                    <span class="block text-[9px] font-mono font-normal text-slate-500 mt-0.5">Traces facts back to document nodes</span>
+                                </td>
+                                <td class="p-4 text-center text-brand-teal">5/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">3/5</td>
+                                <td class="p-4 text-right font-space font-bold text-slate-400">22 / 25</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-sans font-bold text-white">
+                                    Human-in-the-Loop Validation Layer
+                                    <span class="block text-[9px] font-mono font-normal text-slate-500 mt-0.5">Expert review and rating panel</span>
+                                </td>
+                                <td class="p-4 text-center text-brand-teal">5/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-center">3/5</td>
+                                <td class="p-4 text-right font-space font-bold text-slate-400">22 / 25</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-sans font-bold text-white">
+                                    Strategic White-Space Discovery
+                                    <span class="block text-[9px] font-mono font-normal text-slate-500 mt-0.5">Untapped market opportunity identification</span>
+                                </td>
+                                <td class="p-4 text-center text-brand-teal">5/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-center">4/5</td>
+                                <td class="p-4 text-center">3/5</td>
+                                <td class="p-4 text-center">5/5</td>
+                                <td class="p-4 text-right font-space font-bold text-slate-500">21 / 25</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- STEP 3 CONTAINER -->
-            <section id="step3" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 1: Deliverable 3</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Business Value Model & Prioritization Matrix</h2>
-                
-                <h4 class="font-bold text-slate-900 mb-2">Cost-Benefit Analysis Breakdown</h4>
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-lg">
-                        <span class="text-xs uppercase tracking-wider text-rose-600 font-bold">Total Pilot Cost Baseline</span>
-                        <p class="text-2xl font-bold text-rose-900 mt-1">$90,000</p>
-                        <p class="text-xs text-rose-700 mt-1">Includes 3x Devs, 1x Prompt Architect, and 25M LLM tokens.</p>
-                    </div>
-                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-                        <span class="text-xs uppercase tracking-wider text-emerald-600 font-bold">Net Risk Mitigation Horizon</span>
-                        <p class="text-2xl font-bold text-emerald-900 mt-1">+$360,000</p>
-                        <p class="text-xs text-emerald-700 mt-1">Protects 3 at-risk enterprise accounts ($450K total value).</p>
-                    </div>
+            <!-- TAB 7: PILOT EXPERIMENTATIONS -->
+            <section id="tab-experiments" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 2.3: Validation Studies</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Strategic Pilot Experiments</h1>
                 </div>
 
-                <h4 class="font-bold text-slate-900 mb-2">Strategic Prioritization Framework</h4>
-                <table class="w-full text-left text-xs border-collapse border border-slate-200">
-                    <thead>
-                        <tr class="bg-slate-800 text-white">
-                            <th class="p-2 border">Initiative Component</th>
-                            <th class="p-2 border">User Impact</th>
-                            <th class="p-2 border">Tech Feas.</th>
-                            <th class="p-2 border">Resource Feas.</th>
-                            <th class="p-2 border">Alignment</th>
-                            <th class="p-2 border">Priority Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2 border font-semibold">Initiative A: Semantic Ingestion Space</td>
-                            <td class="p-2 border text-center">5</td>
-                            <td class="p-2 border text-center">4</td>
-                            <td class="p-2 border text-center">4</td>
-                            <td class="p-2 border text-center">5</td>
-                            <td class="p-2 border text-center bg-blue-50 font-bold">4.50</td>
-                        </tr>
-                        <tr class="bg-slate-50">
-                            <td class="p-2 border font-semibold">Initiative B: Bounded RAG Citations</td>
-                            <td class="p-2 border text-center">5</td>
-                            <td class="p-2 border text-center">3</td>
-                            <td class="p-2 border text-center">4</td>
-                            <td class="p-2 border text-center">5</td>
-                            <td class="p-2 border text-center bg-blue-50 font-bold">4.25</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border font-semibold">Initiative C: Opportunity Dashboards</td>
-                            <td class="p-2 border text-center">4</td>
-                            <td class="p-2 border text-center">3</td>
-                            <td class="p-2 border text-center">3</td>
-                            <td class="p-2 border text-center">4</td>
-                            <td class="p-2 border text-center bg-slate-100">3.50</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- STEP 4 CONTAINER -->
-            <section id="step4" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 1</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-4">Mega Persona Prompting & Validation Strategy</h2>
-                
-                <p class="text-sm text-slate-600 mb-4">
-                    To validate our core persona assumptions at scale, copy the production-ready system prompt below directly into an enterprise LLM workspace to simulate synthetic feedback from a cohort of 500 global market research professionals.
-                </p>
-
-                <div class="bg-slate-800 text-slate-200 p-4 rounded-lg font-mono text-xs overflow-x-auto border-l-4 border-emerald-500">
-                    <p class="text-emerald-400 font-bold mb-2">// ENTERPRISE COHORT SIMULATION INSTRUCTION</p>
-                    === START SYSTEM INSTRUCTION ===<br>
-                    You are an expert Enterprise User Research Simulation Engine specializing in B2B SaaS product discovery. Your objective is to simulate a highly realistic, statistically diverse cohort of 500 Market Research Analysts and Research Directors working across global hubs (Singapore, New York, London, Tokyo) within fast-paced market intelligence environments.<br><br>
-                    Your goal is to output a comprehensive dataset representing their deep-seated professional pain points, operational constraints, and technical bottlenecks regarding manual data sifting.<br><br>
-                    Execute the generation using the following structural protocol:<br>
-                    1. Generate 5 distinct, highly granular micro-segments within this cohort.<br>
-                    2. Provide a breakdown of their exact time allocations across an average 60-hour work week.<br>
-                    3. Output 3 distinct raw, unvarnished user feedback quotes capturing their daily operational frustrations.<br>
-                    === END SYSTEM INSTRUCTION ===
-                </div>
-            </section>
-
-            <!-- STEP 5 CONTAINER -->
-            <section id="step5" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 2</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Data-Driven Segmentation & Needs Prioritization</h2>
-                
-                <h3 class="font-bold text-slate-900 mb-3">Macro Segment Urgency Assessment</h3>
-                <div class="space-y-4">
-                    <div class="p-4 border-2 border-blue-500 bg-blue-50/50 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-slate-900 text-sm">1. Consumer Tech & Disruptive Hardware</span>
-                            <span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">Early Adopter Target</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Study 1 -->
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <span class="px-2.5 py-0.5 bg-teal-950/40 text-brand-neonCyan border border-teal-500/20 rounded font-mono text-[9px] uppercase font-bold tracking-wider">Experiment 01: DESIRABILITY</span>
+                            <h4 class="font-space font-bold text-white text-base">Actionability Validation</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Compares double-blind AI-synthesized intelligence briefs against traditional retrospective reports compiled by legacy processes.
+                            </p>
                         </div>
-                        <p class="text-xs text-slate-600 mt-2">
-                            <strong>Data Velocity:</strong> Extreme • <strong>Baseline TTI:</strong> 76 Hours • <strong>ARR At-Risk Level:</strong> $260,000/yr
+                        <div class="border-t border-slate-800/80 pt-4 mt-6 flex justify-between items-center font-mono text-[11px]">
+                            <span class="text-slate-500">SUCCESS CRITERIA:</span>
+                            <span class="text-brand-teal font-bold">&gt; 4.2 / 5 Actionability Rating</span>
+                        </div>
+                    </div>
+
+                    <!-- Study 2 -->
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <span class="px-2.5 py-0.5 bg-blue-950/40 text-brand-glowBlue border border-blue-500/20 rounded font-mono text-[9px] uppercase font-bold tracking-wider">Experiment 02: FEASIBILITY</span>
+                            <h4 class="font-space font-bold text-white text-base">Time-to-Insight (TTI) Compression</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Parallel workflow telemetry monitoring the clock cycles required to deliver strategic briefings on unstructured raw data arrays.
+                            </p>
+                        </div>
+                        <div class="border-t border-slate-800/80 pt-4 mt-6 flex justify-between items-center font-mono text-[11px]">
+                            <span class="text-slate-500">SUCCESS CRITERIA:</span>
+                            <span class="text-brand-glowBlue font-bold">72h Compressing to &lt; 24h</span>
+                        </div>
+                    </div>
+
+                    <!-- Study 3 -->
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <span class="px-2.5 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 rounded font-mono text-[9px] uppercase font-bold tracking-wider">Experiment 03: EFFECTIVENESS</span>
+                            <h4 class="font-space font-bold text-white text-base">Foresight Predictive Validity</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Backtesting signal extraction against historical industry shifts to evaluate the precision of early-stage predictions.
+                            </p>
+                        </div>
+                        <div class="border-t border-slate-800/80 pt-4 mt-6 flex justify-between items-center font-mono text-[11px]">
+                            <span class="text-slate-500">SUCCESS CRITERIA:</span>
+                            <span class="text-emerald-400 font-bold">&gt; 75% Predictive Match Precision</span>
+                        </div>
+                    </div>
+
+                    <!-- Study 4 -->
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <span class="px-2.5 py-0.5 bg-purple-950/40 text-purple-400 border border-purple-500/20 rounded font-mono text-[9px] uppercase font-bold tracking-wider">Experiment 04: RELIABILITY</span>
+                            <h4 class="font-space font-bold text-white text-base">Hallucination & Citation Attributions</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Manual red-teaming checks auditing synthetic outputs against verified metadata indexes.
+                            </p>
+                        </div>
+                        <div class="border-t border-slate-800/80 pt-4 mt-6 flex justify-between items-center font-mono text-[11px]">
+                            <span class="text-slate-500">SUCCESS CRITERIA:</span>
+                            <span class="text-purple-400 font-bold">&gt; 95% Accuracy / &lt; 2% Hallucination</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: TECHNICAL ARCHITECTURE & HYBRID RAG -->
+            <section id="tab-architecture" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 3.1: Tech Architecture</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Hybrid RAG Processing Pipelines</h1>
+                </div>
+
+                <!-- Pipeline SVG Visual Flow diagram -->
+                <div class="bg-slate-950 rounded-3xl border border-slate-900 p-6 md:p-8 space-y-6">
+                    <h3 class="font-space font-bold text-white text-base">Node Ingestion Flowchart Architecture</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center font-mono text-[10px]">
+                        <!-- Flow node 1 -->
+                        <div onclick="selectPipelineNode('ingest')" class="p-4 bg-brand-card hover:border-brand-teal border border-slate-800 rounded-2xl cursor-pointer transition">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 text-brand-teal flex items-center justify-center mx-auto mb-3"><i data-lucide="upload" class="w-4 h-4"></i></div>
+                            <h5 class="text-white font-bold uppercase">1. INGESTION</h5>
+                            <p class="text-slate-500 mt-1">Multi-source scraper feeds</p>
+                        </div>
+                        <!-- Flow node 2 -->
+                        <div onclick="selectPipelineNode('chunk')" class="p-4 bg-brand-card hover:border-brand-glowBlue border border-slate-800 rounded-2xl cursor-pointer transition">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 text-brand-glowBlue flex items-center justify-center mx-auto mb-3"><i data-lucide="scissors" class="w-4 h-4"></i></div>
+                            <h5 class="text-white font-bold uppercase">2. CHUNKING</h5>
+                            <p class="text-slate-500 mt-1">500 split / 50 overlap</p>
+                        </div>
+                        <!-- Flow node 3 -->
+                        <div onclick="selectPipelineNode('vector')" class="p-4 bg-brand-card hover:border-emerald-400 border border-slate-800 rounded-2xl cursor-pointer transition">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 text-emerald-400 flex items-center justify-center mx-auto mb-3"><i data-lucide="database" class="w-4 h-4"></i></div>
+                            <h5 class="text-white font-bold uppercase">3. INDEXING</h5>
+                            <p class="text-slate-500 mt-1">ChromaDB semantic index</p>
+                        </div>
+                        <!-- Flow node 4 -->
+                        <div onclick="selectPipelineNode('ollama')" class="p-4 bg-brand-card hover:border-brand-neonCyan border border-slate-800 rounded-2xl cursor-pointer transition">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 text-brand-neonCyan flex items-center justify-center mx-auto mb-3"><i data-lucide="cpu" class="w-4 h-4"></i></div>
+                            <h5 class="text-white font-bold uppercase">4. INFERENCE</h5>
+                            <p class="text-slate-500 mt-1">Private Ollama Node</p>
+                        </div>
+                    </div>
+
+                    <!-- Node contextual explanation -->
+                    <div class="bg-brand-card border border-slate-800 rounded-2xl p-4 min-h-[100px] flex items-center justify-center text-center font-mono text-xs">
+                        <p id="pipeline-info-msg" class="text-slate-400">
+                            Click on any node coordinate above to view system configurations, low-code stack allocations, and chunk parameters.
                         </p>
-                        <p class="text-xs text-slate-700 font-medium mt-1">
-                            <strong>Justification:</strong> Rapid product lifecycles render a 72-hour lag obsolete upon delivery. Tech clients demand real-time adaptations and are highly prepared for AI-augmented data workflows.
-                        </p>
+                    </div>
+                </div>
+
+                <!-- Technology choices summary matrices -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <h4 class="font-space font-bold text-white text-sm">Low-Code Vibe Stack Selection</h4>
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="flex justify-between border-b border-slate-800 pb-2"><span>Orchestration Layer:</span><span class="text-white font-bold">Langflow Visual Nodes</span></div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2"><span>Local Embeds Database:</span><span class="text-white font-bold">ChromaDB Lightweight Vector Store</span></div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2"><span>Reasoning Engines:</span><span class="text-white font-bold">Ollama (Offline Private Deployment)</span></div>
+                            <div class="flex justify-between pb-1"><span>Real-Time Intelligence API:</span><span class="text-white font-bold">Tavily Clean Web Search API</span></div>
+                        </div>
                     </div>
 
-                    <div class="p-4 border border-slate-200 rounded-lg bg-white opacity-60">
-                        <span class="font-bold text-slate-800 text-sm">2. Enterprise Software / B2B SaaS</span>
-                        <p class="text-xs text-slate-500 mt-1">Data Velocity: High • Baseline TTI: 68 Hours • ARR Value: $190,000/yr</p>
-                    </div>
-
-                    <div class="p-4 border border-slate-200 rounded-lg bg-white opacity-60">
-                        <span class="font-bold text-slate-800 text-sm">3. Fast-Moving Consumer Goods (FMCG)</span>
-                        <p class="text-xs text-slate-500 mt-1">Data Velocity: Moderate • Baseline TTI: 52 Hours • ARR Value: $120,000/yr</p>
+                    <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <h4 class="font-space font-bold text-white text-sm">Ethical Governance & Compliance</h4>
+                        <div class="space-y-3 font-mono text-xs leading-relaxed text-slate-400">
+                            <p>
+                                <strong class="text-white">&bull; Fact-Checking through Citations:</strong> Injects negative bounding boundaries to completely prevent model fantasy outputs if context indexes are empty.
+                            </p>
+                            <p>
+                                <strong class="text-white">&bull; Multi-Tenant Privacy Guards:</strong> Offline local deployments secure sensitive client strategies behind enterprise firewalls.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- STEP 6 CONTAINER -->
-            <section id="step6" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 2: Deliverable 3</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Experimentation Plan & Feasibility Framework</h2>
-                
-                <div class="space-y-4">
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-bold font-mono">EXPERIMENT 1</span>
-                        <h4 class="font-bold text-slate-900 mt-1">Analyst Time-Compression Validation</h4>
-                        <p class="text-xs text-slate-600 mt-1"><strong>Hypothesis:</strong> We believe that market research analysts will compress report cycle times by 50% or more without lowering quality when using an automated semantic RAG sifting workspace.</p>
-                        <p class="text-xs text-blue-700 font-semibold mt-1">🎯 Success Target: 85% of test analysts reduce reporting time down to under 30 hours by week 3.</p>
-                    </div>
+            <!-- TAB 9: LIVE WORKSPACE SANDBOX PROTOTYPE SIMULATOR -->
+            <section id="tab-sandbox" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 3.1: Interactive Prototype</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Analyst Workspace Simulator</h1>
+                </div>
 
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-bold font-mono">EXPERIMENT 2</span>
-                        <h4 class="font-bold text-slate-900 mt-1">Deterministic Anti-Hallucination Framework Test</h4>
-                        <p class="text-xs text-slate-600 mt-1"><strong>Hypothesis:</strong> We believe that the Head of Research will authorize direct-to-client report delivery when the generation engine is bound by hard context-constraints that ensure zero hallucinated facts.</p>
-                        <p class="text-xs text-emerald-700 font-semibold mt-1">🎯 Success Target: 100% of reports pass internal editorial audit over 4 weeks with exactly zero hallucinations.</p>
+                <div class="glass-panel p-6 md:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        
+                        <!-- Signal selections pane -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div>
+                                <h3 class="font-space font-bold text-white text-base">Ingest Raw Competitive Signal</h3>
+                                <p class="text-xs text-slate-400 font-mono mt-1">Select a raw market feed to simulate the RAG compilation process.</p>
+                            </div>
+
+                            <div class="space-y-3">
+                                <button onclick="simulateWorkspaceIngestion('battery')" class="w-full text-left p-4 bg-slate-950 hover:border-brand-teal border border-slate-900 rounded-2xl transition group">
+                                    <span class="text-[9px] font-mono text-brand-teal uppercase tracking-wider block mb-1">Global EV Battery Outlook</span>
+                                    <h5 class="text-xs font-bold text-white group-hover:text-brand-neonCyan">"European solid-state battery patents expand 45% in Q2..."</h5>
+                                </button>
+                                <button onclick="simulateWorkspaceIngestion('saas')" class="w-full text-left p-4 bg-slate-950 hover:border-brand-teal border border-slate-900 rounded-2xl transition group">
+                                    <span class="text-[9px] font-mono text-brand-teal uppercase tracking-wider block mb-1">SaaS Cloud optimization Report</span>
+                                    <h5 class="text-xs font-bold text-white group-hover:text-brand-neonCyan">"3 major enterprise accounts cancel optimization contracts..."</h5>
+                                </button>
+                                <button onclick="simulateWorkspaceIngestion('tariff')" class="w-full text-left p-4 bg-slate-950 hover:border-brand-teal border border-slate-900 rounded-2xl transition group">
+                                    <span class="text-[9px] font-mono text-brand-teal uppercase tracking-wider block mb-1">FMCG Supply Chain Trade</span>
+                                    <h5 class="text-xs font-bold text-white group-hover:text-brand-neonCyan">"Cross-border shipping adjustments compress retail margins 4.2%..."</h5>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Prompt Terminal Console -->
+                        <div class="lg:col-span-7 bg-slate-950 rounded-2xl border border-slate-900 p-6 flex flex-col justify-between min-h-[380px]">
+                            <div class="flex justify-between items-center border-b border-slate-900 pb-3 font-mono text-[10px] text-slate-500">
+                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-brand-teal rounded-full animate-pulse"></span> INGESTION_OLLAMA_CORE_V1.1</span>
+                                <button onclick="clearConsoleView()" class="hover:text-white"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+
+                            <!-- Terminal console view screen -->
+                            <div id="sandbox-console" class="flex-grow font-mono text-xs text-slate-300 space-y-4 py-4 max-h-[300px] overflow-y-auto leading-relaxed">
+                                <p class="text-slate-600">// Terminal standby. Select a competitive feed on the left to initiate ingestion.</p>
+                            </div>
+
+                            <!-- Processing visualizer spinner -->
+                            <div id="sandbox-loader" class="hidden py-4 text-center space-y-2">
+                                <div class="inline-block w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full animate-spin"></div>
+                                <p class="text-[10px] text-slate-500 font-mono">Splitting 500 characters / embedding ChromaDB nodes...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- STEP 7 CONTAINER -->
-            <section id="step7" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 3: Deliverable 1</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Technical Architecture & Prototype Documentation</h2>
-                
-                <h3 class="font-bold text-slate-900 text-sm uppercase text-slate-400 tracking-wider mb-3">Enterprise Retrieval-Augmented Generation (RAG) Architecture</h3>
-                <div class="p-4 bg-slate-900 text-slate-300 font-mono text-xs rounded-lg overflow-x-auto leading-relaxed">
-                    [Raw Unstructured Inputs] → [Semantic Chunking Engine (512 Size, 64 Overlap)]<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
-                    [Target Query] → [Hybrid Retrieval Engine] → [Pinecone Vector DB Index Assets]<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
-                    [Prompt-Isolation Box] → [OpenAI gpt-4o Model Layer] → [Analyst Verification Screen]
+            <!-- TAB 10: MVP VALUE ROADMAP -->
+            <section id="tab-roadmap" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-xs font-mono font-bold text-brand-teal uppercase tracking-widest block">Deliverable 3.2: Implementation Plan</span>
+                    <h1 class="text-3xl font-space font-bold text-white tracking-tight">Outcome-Driven MVP Value Roadmap</h1>
                 </div>
 
-                <h3 class="font-bold text-slate-900 text-sm mt-6 mb-2">Core Component Selection Matrix</h3>
-                <table class="w-full text-left text-xs border-collapse border border-slate-200">
-                    <thead>
-                        <tr class="bg-slate-100 font-bold">
-                            <th class="p-2 border">Infrastructure Node</th>
-                            <th class="p-2 border">Selection choice</th>
-                            <th class="p-2 border">Technical Justification</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2 border font-semibold">Base LLM Engine</td>
-                            <td class="p-2 border font-mono">OpenAI gpt-4o</td>
-                            <td class="p-2 border text-slate-600">Top context window instruction retention limits and low latency profiles.</td>
-                        </tr>
-                        <tr class="bg-slate-50">
-                            <td class="p-2 border font-semibold">Vector Index Storage</td>
-                            <td class="p-2 border font-mono">Pinecone Enterprise</td>
-                            <td class="p-2 border text-slate-600">Fully managed cloud framework, native horizontal scaling, sub-second hybrid lookups.</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border font-semibold">Embedding System</td>
-                            <td class="p-2 border font-mono">text-embedding-3-small</td>
-                            <td class="p-2 border text-slate-600">Highly reliable 1536 dimension vector mapping across regional multi-language feeds.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+                <div class="max-w-3xl mx-auto space-y-8">
+                    <!-- Roadmap Phase 1 -->
+                    <div class="relative pl-8 border-l-2 border-brand-teal pb-8">
+                        <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-brand-neonCyan border-2 border-brand-deep"></div>
+                        <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-3">
+                            <span class="text-[9px] font-mono text-brand-teal uppercase font-bold tracking-widest">Phase 01: MVP launch (Days 1 - 60)</span>
+                            <h3 class="font-space font-bold text-lg text-white">Churn Suppression & Real-Time Synthesis</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Focus on stabilizing high-risk large enterprise accounts. Deploy Multi-Source Ingestion, ChromaDB indexing structures, and context-bound summaries.
+                            </p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-slate-800/80 pt-4 text-[10px] font-mono text-slate-500">
+                                <div>CHURN TARGET:<p class="text-white font-bold">12% &rarr; 8%</p></div>
+                                <div>RETAINED REV:<p class="text-white font-bold">$400,000</p></div>
+                                <div>TTI GOAL:<p class="text-white font-bold">72h &rarr; &lt;24h</p></div>
+                                <div>PILOT SCOPE:<p class="text-brand-teal font-bold">60 Days</p></div>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- STEP 8 CONTAINER -->
-            <section id="step8" class="tab-content hidden bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-blue-600 tracking-wide uppercase">Phase 3: Deliverable 2</span>
-                <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-6">Outcome-Driven AI Value Roadmap</h2>
-                
-                <div class="grid grid-cols-3 gap-4 text-xs mb-6">
-                    <div class="p-4 border border-blue-200 bg-blue-50/50 rounded-lg">
-                        <span class="font-bold text-blue-600">Theme 1: Core Pilot MVP</span>
-                        <p class="text-slate-500 mt-1">Days 1–60 • Focus: TTI Compression down to under 30 hours, reversing immediate enterprise contract churn vectors.</p>
+                    <!-- Roadmap Phase 2 -->
+                    <div class="relative pl-8 border-l-2 border-slate-800 pb-8">
+                        <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-slate-800"></div>
+                        <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-3">
+                            <span class="text-[9px] font-mono text-brand-glowBlue uppercase font-bold tracking-widest">Phase 02: Scale Operations (Days 61 - 120)</span>
+                            <h3 class="font-space font-bold text-lg text-white">Analyst Workflow Automation</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Optimize model token utilization, automate overlap sizes, and deploy private vector store instances to keep API operating expenses below strict ceilings.
+                            </p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-slate-800/80 pt-4 text-[10px] font-mono text-slate-500">
+                                <div>PRODUCTIVITY:<p class="text-white font-bold">+40% Gains</p></div>
+                                <div>OPEX CEILING:<p class="text-white font-bold">&lt; $0.08 / report</p></div>
+                                <div>OUTPUTS:<p class="text-white font-bold">14 / Analyst / Mo</p></div>
+                                <div>FOCUS AREA:<p class="text-brand-glowBlue font-bold">Opex Limit Control</p></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-4 border border-slate-200 rounded-lg bg-white">
-                        <span class="font-bold text-slate-700">Theme 2: Scale & Cost</span>
-                        <p class="text-slate-500 mt-1">Days 61–120 • Focus: Optimizing pipeline workers and chunk layouts to cap token costs under $0.08 per file asset.</p>
-                    </div>
-                    <div class="p-4 border border-slate-200 rounded-lg bg-white">
-                        <span class="font-bold text-slate-700">Theme 3: Advanced RAG</span>
-                        <p class="text-slate-500 mt-1">Days 121–180 • Focus: Multi-agent simulations to expand new account pipeline growth patterns.</p>
-                    </div>
-                </div>
 
-                <h3 class="font-bold text-slate-900 text-sm mb-2">Executive Alignment Messaging Guide</h3>
-                <div class="space-y-2 text-xs">
-                    <div class="p-2 bg-slate-50 border-l-4 border-slate-800">
-                        <strong>For Sanjay Gupta (CFO):</strong> "The $90,000 investment immediately secures $450,000 in threatened ARR while adding 3x analyst operational bandwidth capabilities without increasing headcount."
-                    </div>
-                    <div class="p-2 bg-slate-50 border-l-4 border-slate-800">
-                        <strong>For David Chen (Head of Research):</strong> "This platform automates raw sifting bottlenecks so your senior researchers can step away from text cleanup tasks and focus on elite strategy curation."
+                    <!-- Roadmap Phase 3 -->
+                    <div class="relative pl-8">
+                        <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-slate-800"></div>
+                        <div class="bg-brand-card p-6 rounded-2xl border border-slate-800 space-y-3">
+                            <span class="text-[9px] font-mono text-emerald-400 uppercase font-bold tracking-widest">Phase 03: Premium Upgrade (Days 121 - 180)</span>
+                            <h3 class="font-space font-bold text-lg text-white">Predictive Scenario Simulations</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Roll out agentic search loops, competitive risk warnings, and trend simulators to generate expansion ARR.
+                            </p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-slate-800/80 pt-4 text-[10px] font-mono text-slate-500">
+                                <div>UPSELL CONV:<p class="text-white font-bold">25% LTV Lift</p></div>
+                                <div>TTI GOAL:<p class="text-white font-bold">&lt; 15 Minutes</p></div>
+                                <div>CLIENT SATISFY:<p class="text-white font-bold">3.5 &rarr; 4.5</p></div>
+                                <div>FOCUS AREA:<p class="text-emerald-400 font-bold">Premium Features</p></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
+
+        <!-- FULL POWERPOINT SLIDE DECK VIEW -->
+        <main id="slide-deck-view" class="hidden flex-grow p-6 md:p-8 overflow-y-auto h-full flex flex-col justify-between bg-slate-950 select-none">
+            
+            <div class="max-w-5xl mx-auto w-full flex-grow flex flex-col justify-between">
+                
+                <!-- Dynamic slide control indicators -->
+                <div class="flex justify-between items-center mb-4 text-xs font-mono">
+                    <div>
+                        <span class="text-slate-500">MARKETMINDS GLOBAL</span>
+                        <span class="text-slate-600 border-l border-slate-800 pl-2 ml-2">Singapore HQ</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="navigateSlide(-1)" class="p-1.5 bg-brand-card border border-slate-850 rounded hover:text-brand-neonCyan transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                        <span id="slide-index-lbl" class="text-brand-neonCyan font-bold px-1">Slide 1 of 11</span>
+                        <button onclick="navigateSlide(1)" class="p-1.5 bg-brand-card border border-slate-850 rounded hover:text-brand-neonCyan transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <!-- Central Presentation Slide Screen Window -->
+                <div id="slide-screen-viewport" class="flex-grow bg-brand-card border border-slate-800 rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden min-h-[460px]">
+                    <div class="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                        <i data-lucide="presentation" class="w-80 h-80 text-brand-teal"></i>
+                    </div>
+
+                    <!-- Slide Contents injected via JS dynamic arrays -->
+                    <div id="slide-content-stage" class="space-y-6 relative z-10"></div>
+
+                    <!-- Slide Footer details -->
+                    <div class="border-t border-slate-800/80 pt-4 mt-6 flex justify-between items-center text-[10px] font-mono text-slate-500">
+                        <span>EMBA Strategic GenAI Capstone Briefing</span>
+                        <span>CONFIDENTIAL - Strategic Proposal</span>
+                        <span id="slide-page-indicator">Page 1</span>
+                    </div>
+                </div>
+
+                <div class="text-center text-[10px] font-mono text-slate-600 mt-4 flex items-center justify-center gap-2">
+                    <i data-lucide="keyboard" class="w-4 h-4 text-slate-500"></i>
+                    <span>Press the <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-slate-400">Left</kbd> or <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-slate-400">Right</kbd> arrow keys to navigate slides.</span>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Simple client-side tab switching script -->
+    <!-- SCRIPT INFRASTRUCTURES -->
     <script>
+        // Tab switching mechanics
         function switchTab(tabId) {
-            // Hide all tab containers
-            document.querySelectorAll('.tab-content').forEach(element => {
-                element.classList.add('hidden');
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
             });
-            // Remove active classes from all sidebar links
-            document.querySelectorAll('aside button').forEach(button => {
-                button.classList.remove('active-tab');
-                button.classList.add('text-slate-600', 'hover:bg-slate-50');
-            });
+            // Show target tab
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
 
-            // Show current target container
-            document.getElementById(tabId).classList.remove('hidden');
-            // Apply active class to current active sidebar element
-            const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.add('active-tab');
-            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            // Deactivate all sidebar nav buttons
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+                btn.className = "nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 transition text-left";
+            });
+            // Activate selected button
+            const activeBtn = document.querySelector(`.nav-tab-btn[data-tab="${tabId}"]`);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab-btn flex items-center space-x-2.5 w-full px-3 py-2 text-xs font-medium rounded-lg text-brand-teal bg-brand-card border-l-2 border-brand-teal transition text-left";
+            }
         }
+
+        // Global Presentation Mode toggles
+        let globalModeState = 'dashboard';
+        function setGlobalMode(mode) {
+            globalModeState = mode;
+            const dashboardBtn = document.getElementById('btn-mode-dashboard');
+            const deckBtn = document.getElementById('btn-mode-deck');
+            const workspaceView = document.getElementById('portfolio-workspace-view');
+            const deckView = document.getElementById('slide-deck-view');
+            const sidebar = document.querySelector('aside');
+
+            if (mode === 'dashboard') {
+                workspaceView.classList.remove('hidden');
+                deckView.classList.add('hidden');
+                sidebar.classList.remove('hidden');
+                dashboardBtn.className = "px-4 py-1.5 rounded-md text-brand-neonCyan bg-brand-card transition flex items-center space-x-1.5";
+                deckBtn.className = "px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition flex items-center space-x-1.5";
+            } else {
+                workspaceView.classList.add('hidden');
+                deckView.classList.remove('hidden');
+                sidebar.classList.add('hidden');
+                dashboardBtn.className = "px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition flex items-center space-x-1.5";
+                deckBtn.className = "px-4 py-1.5 rounded-md text-brand-neonCyan bg-brand-card transition flex items-center space-x-1.5";
+                renderDeckSlide();
+            }
+        }
+
+        // Financial Dynamic ROI Simulator variables and listeners
+        const roiDevInput = document.getElementById('roi-dev-input');
+        const roiOpexInput = document.getElementById('roi-opex-input');
+        const roiBenefitInput = document.getElementById('roi-benefit-input');
+
+        const roiDevLbl = document.getElementById('roi-dev-lbl');
+        const roiOpexLbl = document.getElementById('roi-opex-lbl');
+        const roiBenefitLbl = document.getElementById('roi-benefit-lbl');
+
+        const roiNetVal = document.getElementById('roi-net-val');
+        const roiRatioVal = document.getElementById('roi-ratio-val');
+        const roiPaybackVal = document.getElementById('roi-payback-val');
+
+        function recalculateROILimits() {
+            const dev = parseInt(roiDevInput.value);
+            const opex = parseInt(roiOpexInput.value);
+            const benefit = parseInt(roiBenefitInput.value);
+
+            // Update range labels
+            roiDevLbl.textContent = dev;
+            roiOpexLbl.textContent = opex;
+            roiBenefitLbl.textContent = benefit;
+
+            // Live metrics computations
+            const cost = dev + opex;
+            const net = benefit - cost;
+            const ratio = (benefit / cost).toFixed(1);
+            const payback = Math.max(1, Math.round(dev / (benefit / 12)));
+
+            roiNetVal.textContent = net.toLocaleString();
+            roiRatioVal.textContent = ratio;
+            roiPaybackVal.textContent = payback;
+        }
+
+        roiDevInput.addEventListener('input', recalculateROILimits);
+        roiOpexInput.addEventListener('input', recalculateROILimits);
+        roiBenefitInput.addEventListener('input', recalculateROILimits);
+
+        // Segmentation Details configurations
+        const kmeansSegments = {
+            accelerators: {
+                title: "4. Strategic Accelerators (SWEET SPOT)",
+                archetype: "Strategic Growth (Ideal Profile)",
+                badge: "Primary Beachhead Target",
+                desc: "High Future-Sight combined with aggressive Action Orientation. Focuses on planning future market scenarios and implementing immediate tactical pivots. This profile is extremely motivated to bypass manual sifting delays.",
+                user: "Sarah (VP Strategy)",
+                friction: "Minimal (Procures instantly)",
+                wtp: "EXCELLENT (Immediate conversion)"
+            },
+            executors: {
+                title: "3. Tactical Executors",
+                archetype: "Growth Goals (Reactive Operators)",
+                badge: "Secondary Priority",
+                desc: "Low Future-Sight but High Action Orientation. Reacts promptly to immediate competitor triggers but expends minimal effort preparing for long-term policy shifts.",
+                user: "Director Competitive Intelligence",
+                friction: "Moderate (Short-term focus friction)",
+                wtp: "HIGH (ROI-driven conversion)"
+            },
+            observers: {
+                title: "1. Strategic Observers",
+                archetype: "Strategic Seekers (Suspects)",
+                badge: "Tertiary Priority",
+                desc: "High Future-Sight combined with Low Action Orientation. Planners with deep theoretical interests in macro trends but constrained by complex multi-year procurement loops.",
+                user: "Senior Research Analyst / Long-term Planner",
+                friction: "High (Slow cycle processes)",
+                wtp: "MEDIUM (Low velocity cycles)"
+            },
+            monitors: {
+                title: "2. Intelligence Monitors",
+                archetype: "Intel Intake (Traditional Users)",
+                badge: "Low Priority",
+                desc: "Low Future-Sight and Low Action Orientation. Prefers traditional retrospective PDF briefings. High organizational resistance to adopting Generative AI architectures.",
+                user: "Traditional Research Operations",
+                friction: "Critical (Resistant to platform changes)",
+                wtp: "LOW (Decline hazard)"
+            }
+        };
+
+        function selectKmeansSegment(key) {
+            const prompt = document.getElementById('segment-prompt-view');
+            const display = document.getElementById('segment-display-view');
+            const item = kmeansSegments[key];
+
+            prompt.classList.add('hidden');
+            display.classList.remove('hidden');
+
+            document.getElementById('seg-title').textContent = item.title;
+            document.getElementById('seg-archetype').textContent = item.archetype;
+            document.getElementById('seg-desc').textContent = item.desc;
+            document.getElementById('seg-user').textContent = item.user;
+            document.getElementById('seg-friction').textContent = item.friction;
+            document.getElementById('seg-wtp').textContent = item.wtp;
+            document.getElementById('seg-badge').textContent = item.badge;
+        }
+
+        // Tech Pipeline node explanation database
+        const pipelineNodes = {
+            ingest: {
+                title: "1. Ingestion Pipeline Node",
+                msg: "aggregates raw signals from competitive news feeds, filing PDF files, and social chatter direct streams into multi-source local ingestion arrays."
+            },
+            chunk: {
+                title: "2. Semantic Text Splitter",
+                msg: "Slices dense unstructured texts into standardized, overlapping 500-character chunks with a 50 character sliding text overlap, preserving critical context across boundary rows."
+            },
+            vector: {
+                title: "3. ChromaDB Semantic Embeddings",
+                msg: "Generates high-contrast numerical dimensions and indexes database records to optimize rapid proximity vector query scans."
+            },
+            ollama: {
+                title: "4. Private LLM Inference",
+                msg: "Compiles contextual context frames within an offline private Ollama engine. Prompts enforce strict negative boundaries to completely suppress hallucinations."
+            }
+        };
+
+        function selectPipelineNode(nodeKey) {
+            const node = pipelineNodes[nodeKey];
+            const displayMsg = document.getElementById('pipeline-info-msg');
+            displayMsg.innerHTML = `<strong class="text-white">${node.title}:</strong> ${node.msg}`;
+        }
+
+        // Live Analyst Ingestion Simulator data arrays
+        const rawSignalsDB = {
+            battery: {
+                source: "Global EV battery Report (Page 42)",
+                rawText: "European solid-state battery patents expand 45% in Q2. Leading specialists project commercial integration across premium high-range vehicle lines starting in early 2027.",
+                briefOutput: "## EXECUTIVE INTEL BRIEF: AUTOMOTIVE BATTERY EVOLUTION\n\n- **Emerging Trend:** European solid-state battery patent activity has expanded sharply [cite: Global EV battery Report - Page 42].\n- **Time horizon:** Commercial integration expected to commence in luxury profiles by early 2027.\n- **Foresight Recommendation:** Establish early design evaluation channels with key European hardware specialists."
+            },
+            saas: {
+                source: "B2B SaaS Financial Disclosures - Q3",
+                rawText: "Quarterly cancellations identify 3 large enterprise accounts cutting cloud optimization contracts, citing long latency times and lack of proactive recommendation tools.",
+                briefOutput: "## ACTIONABLE RISKS: ENTERPRISE CONTRACT CHURN\n\n- **Identified Threat:** 3 major enterprise subscriptions are at risk due to platform response latency [cite: B2B SaaS Financial Disclosures - Q3].\n- **Implication:** Actionability score compression is directly linked to churn risk scaling.\n- **Defensive Initiative:** Promptly roll out automated synthesis engines to recover performance."
+            },
+            tariff: {
+                source: "FMCG Shipping Trade Bulletin #982",
+                rawText: "Cross-border shipping adjustments compress retail margins 4.2% across global dry goods networks. Retailers are actively shifting to domestic supply lines to recover margin erosion.",
+                briefOutput: "## STRATEGIC ALERT: MARGIN EROSION VECTORS\n\n- **Macro-Trend:** Cross-border dry goods retail margins are contracting by 4.2% due to adjusted tariffs [cite: FMCG Shipping Trade Bulletin #982].\n- **Business Impact:** Traditional inventory structures will experience heightened pricing stress.\n- **Mitigation Directive:** Shift immediate operational focus toward local sourcing options."
+            }
+        };
+
+        function simulateWorkspaceIngestion(key) {
+            const consoleBox = document.getElementById('sandbox-console');
+            const loader = document.getElementById('sandbox-loader');
+            const item = rawSignalsDB[key];
+
+            consoleBox.innerHTML = "";
+            loader.classList.remove('hidden');
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                consoleBox.innerHTML = `
+                    <p class="text-brand-teal font-bold">&gt; INGESTING RAW TEXT FILE: ${item.source}</p>
+                    <p class="text-slate-500 italic mt-1">"${item.rawText}"</p>
+                    <p class="text-brand-glowBlue mt-2">&gt; CHROMA_DB ENCODER: Splitting 500 characters with 50 character overlap...</p>
+                    <p class="text-emerald-400">&gt; VECTOR SCAN: Index completed successfully. Proximity distance = 0.14</p>
+                    <p class="text-brand-neonCyan mt-2">&gt; OLLAMA RETRIEVAL COMPILING WITH CITATION METADATA GUARDRAILS...</p>
+                    
+                    <div class="mt-4 p-4 bg-slate-900 border border-slate-800 rounded-xl text-slate-100 font-sans text-xs whitespace-pre-line leading-relaxed">
+                        ${item.briefOutput}
+                    </div>
+                `;
+            }, 1200);
+        }
+
+        function clearConsoleView() {
+            document.getElementById('sandbox-console').innerHTML = `<p class="text-slate-600">// Terminal standby. Select a competitive feed on the left to initiate ingestion.</p>`;
+        }
+
+        // Slide Deck presentation array matching the provided page details
+        let currentSlideIndex = 0;
+        const presentationSlides = [
+            {
+                title: "MarketLens - Strategic Intelligence",
+                subtitle: "The Future of Strategic Marketing Intelligence",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-full">
+                        <div class="space-y-4">
+                            <span class="px-2.5 py-0.5 bg-teal-950 text-brand-neonCyan rounded font-mono text-[10px] font-bold uppercase">Slide 1 of 11: Introduction</span>
+                            <h3 class="text-3xl font-space font-bold text-white tracking-tight">MarketLens Copilot</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed font-mono">
+                                Compressing the 72-hour manual data synthesis bottleneck into an automated, zero-hallucination executive workspace layer.
+                            </p>
+                            <div class="p-4 bg-slate-950/60 border border-slate-900 rounded-2xl flex items-center gap-3">
+                                <div class="p-2 bg-slate-900 rounded-lg text-brand-teal"><i data-lucide="shield" class="w-5 h-5"></i></div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-white">Trust-Backed GenAI PM assignment</h5>
+                                    <p class="text-[9px] text-slate-500 font-mono">EMBA 2024B CCE - MMG Platform Delivery</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative rounded-2xl overflow-hidden border border-slate-800 h-[240px] flex items-center justify-center bg-slate-900">
+                            <!-- SVG Globe Visual asset matching ppt slide Page 3 -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                                <i data-lucide="globe" class="w-48 h-48 text-brand-teal animate-spin" style="animation-duration: 25s;"></i>
+                            </div>
+                            <div class="text-center z-10 space-y-2">
+                                <span class="text-2xl font-space font-bold text-white tracking-wider block">Singapore HQ Hub</span>
+                                <span class="text-[10px] font-mono text-brand-teal uppercase tracking-widest block">MarketMinds Global</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "About MarketMinds Global",
+                subtitle: "Slide 2 of 11: Corporate Profile & Team registry",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-[11px]">
+                        <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-900 space-y-3">
+                            <h4 class="font-space font-bold text-white text-xs uppercase text-brand-teal">Organization Specs</h4>
+                            <p class="text-slate-400 leading-relaxed text-[10px]">
+                                Delivering actionable B2B market intelligence that empowers organizations to make confident, future-ready decisions.
+                            </p>
+                            <div class="space-y-1.5 text-slate-300">
+                                <p class="flex justify-between"><span>HEADQUARTERS:</span><span class="text-white">Singapore</span></p>
+                                <p class="flex justify-between"><span>CLIENT PROFILE:</span><span class="text-white">Fortune 500 Enterprises</span></p>
+                                <p class="flex justify-between"><span>GROWTH STAGE:</span><span class="text-white">Rapidly Expanding</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-900 space-y-3">
+                            <h4 class="font-space font-bold text-white text-xs uppercase text-brand-teal">Strategic Team Leads</h4>
+                            <div class="space-y-2">
+                                <p class="flex justify-between border-b border-slate-900 pb-1"><span>Deepti Sharma:</span><span class="text-slate-500 text-[10px]">AI Strategist</span></p>
+                                <p class="flex justify-between border-b border-slate-900 pb-1"><span>Pavana Shetty:</span><span class="text-slate-500 text-[10px]">Product Leader</span></p>
+                                <p class="flex justify-between"><span>Priya S:</span><span class="text-slate-500 text-[10px]">GTM Strategist</span></p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Problem Statement: Churn & Inefficiencies",
+                subtitle: "Slide 3 of 11: Delays and Churn Risks",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-mono">
+                        <div class="p-4 bg-red-950/15 border border-red-500/20 rounded-xl space-y-2.5">
+                            <h4 class="font-space font-bold text-red-400 text-xs uppercase flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Legacies Inefficiencies</h4>
+                            <p class="text-slate-300 leading-relaxed">
+                                Absence of an intelligent synthesis layer delays the conversion of vast market data into actionable insights, causing client attrition.
+                            </p>
+                            <div class="space-y-1 text-slate-400">
+                                <p>&bull; 72-Hour Time-to-Insight cycle</p>
+                                <p>&bull; High manual research & synthesis effort</p>
+                                <p>&bull; Churn rate spiked up to 12%</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-950/40 border border-slate-900 rounded-xl space-y-3">
+                            <h4 class="font-space font-bold text-brand-neonCyan text-xs uppercase flex items-center gap-1.5"><i data-lucide="shield" class="w-4 h-4"></i> Value Moat Solution</h4>
+                            <p class="text-slate-300 leading-relaxed">
+                                MarketLens empowers analysts to deliver faster, predictive intelligence - driving retention, differentiation, and long-term advantage.
+                            </p>
+                            <div class="space-y-1 text-brand-teal font-bold">
+                                <p>&bull; Automated RAG parsing under 24h</p>
+                                <p>&bull; Contextual citations suppression layer</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "The Strategic Gap Analysis",
+                subtitle: "Slide 4 of 11: Bridging the gap from retrospective to predictive",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-mono">
+                        <div class="bg-slate-950 p-4 rounded-xl space-y-2">
+                            <h5 class="text-red-400 font-bold uppercase">&bull; The Problem Vector</h5>
+                            <p class="text-slate-400">RISING CHURN: Clients migrate to more agile platforms.</p>
+                            <p class="text-slate-400">DELAYED INSIGHTS: Reports take too long to synthesize manually.</p>
+                            <p class="text-slate-400">MISSED TRENDS: Opportunities and threats are identified too late.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl space-y-2 border border-brand-teal/20">
+                            <h5 class="text-brand-teal font-bold uppercase">&bull; MarketLens Close Gap</h5>
+                            <p class="text-white">COPILOT: Transforms fragmented signals into real-time strategy.</p>
+                            <p class="text-white">PREDICTIVE: Uncovers opportunities and competitive risks early.</p>
+                            <p class="text-white">DECISION: Enables faster, data-driven, confident actions.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Three Key Strategic Questions",
+                subtitle: "Slide 5 of 11: Defining the Future of Intelligence",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] font-mono">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-900">
+                            <span class="text-brand-teal font-bold block mb-1">1. WHAT NEEDS TO CHANGE?</span>
+                            <p class="text-slate-400">Manual synthesis of market intelligence, retrospective reporting, and delayed insights.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-900">
+                            <span class="text-brand-glowBlue font-bold block mb-1">2. WHAT WILL REMAIN?</span>
+                            <p class="text-slate-400">Trusted market intelligence expertise, analyst-led validation, and deep industry knowledge.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-900">
+                            <span class="text-emerald-400 font-bold block mb-1">3. WHAT IS NEWLY POSSIBLE?</span>
+                            <p class="text-slate-400">Real-time predictive intelligence, early detection of threats, and white-space discovery.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Target Persona: Strategic Sarah",
+                subtitle: "Slide 6 of 11: Primary decision-maker empathy profile",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-[10px]">
+                        <div class="space-y-2">
+                            <h5 class="text-xs font-space font-bold text-white">VP Strategy / Corporate Growth</h5>
+                            <p class="text-slate-400 leading-relaxed">
+                                Leads corporate growth bets for a large enterprise ($1B+ revenue). Requires source-backed conviction to present to the executive board.
+                            </p>
+                            <p class="text-slate-400">Favored Tools: Bloomberg Terminal, McKinsey Briefings, Gartner.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl space-y-2">
+                            <h5 class="text-brand-teal font-bold uppercase">Needs & Wants</h5>
+                            <p class="text-slate-300">&bull; Identify emerging trends and white spaces early.</p>
+                            <p class="text-slate-300">&bull; Reliable, source-backed insights she can trust.</p>
+                            <h5 class="text-red-400 font-bold uppercase mt-2">Frustrations</h5>
+                            <p class="text-slate-300">&bull; Intelligence arrives too late; hard to build confidence.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Financial ROI Model & CBA Matrix",
+                subtitle: "Slide 7 of 11: Quantifying CapEx vs Retained ARR Benefits",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] font-mono text-center">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900">
+                            <span class="text-slate-500 block mb-1">TOTAL CAPEX</span>
+                            <span class="text-base font-bold text-brand-teal">$400K</span>
+                            <p class="text-[9px] text-slate-600 mt-2">Product PM & AI Engineering</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900">
+                            <span class="text-slate-500 block mb-1">TOTAL ANNUAL OPEX</span>
+                            <span class="text-base font-bold text-brand-glowBlue">$140K</span>
+                            <p class="text-[9px] text-slate-600 mt-2">LLM Context Tokens & Db hosting</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900">
+                            <span class="text-slate-500 block mb-1">TOTAL GAINS</span>
+                            <span class="text-base font-bold text-emerald-400">$1.25M</span>
+                            <p class="text-[9px] text-slate-600 mt-2">Retention, Productivity, Upsell</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 text-center font-mono text-[11px] mt-4 flex justify-between">
+                        <span class="text-slate-400">BCR Index: <strong class="text-white">2.3x</strong></span>
+                        <span class="text-slate-400">Net 12-Month Yield: <strong class="text-brand-neonCyan">+$710,000</strong></span>
+                        <span class="text-slate-400">Payback Period: <strong class="text-emerald-400">10-12 Months</strong></span>
+                    </div>
+                `
+            },
+            {
+                title: "K-Means Customer Segmentation",
+                subtitle: "Slide 8 of 11: Finding the beachhead entry sweet spot",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-[10px]">
+                        <div class="space-y-3">
+                            <h4 class="font-space font-bold text-white text-xs uppercase text-brand-teal">S4: Strategic Accelerators (Beachhead)</h4>
+                            <p class="text-slate-300 leading-relaxed">
+                                Combines high future-sight and aggressive action. Sarah archetype matches this segment completely, exhibiting the highest willingness to pay.
+                            </p>
+                            <p class="text-slate-500 italic">S3: Tactical Executors represents secondary priority operators.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 text-center space-y-2 flex flex-col justify-center">
+                            <span class="text-[9px] text-slate-400 block">Optimal Clusters inflection Point</span>
+                            <span class="text-lg font-space font-bold text-brand-neonCyan">K=4 (Elbow Method)</span>
+                            <p class="text-[9px] text-slate-600">Dramatic summed within-cluster variance drop at K=4.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "The 4 Piloted Validation Experiments",
+                subtitle: "Slide 9 of 11: Success parameters index",
+                content: `
+                    <div class="grid grid-cols-2 gap-4 text-[9px] font-mono">
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-1">
+                            <span class="text-brand-teal font-bold uppercase">1. DESIRABILITY</span>
+                            <p class="text-slate-400">Actionability score evaluates AI drafts vs static reports.</p>
+                            <p class="text-white">Success Target: &gt; 4.2 / 5.0 Rating</p>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-1">
+                            <span class="text-brand-glowBlue font-bold uppercase">2. FEASIBILITY</span>
+                            <p class="text-slate-400">TTI metric tracks compiler time reduction loops.</p>
+                            <p class="text-white">Success Target: 72h &rarr; &lt; 24h</p>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-1">
+                            <span class="text-emerald-400 font-bold uppercase">3. EFFECTIVENESS</span>
+                            <p class="text-slate-400">Backtesting signals against historical milestones.</p>
+                            <p class="text-white">Success Target: &gt; 75% precision</p>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-1">
+                            <span class="text-purple-400 font-bold uppercase">4. RELIABILITY</span>
+                            <p class="text-slate-400">Factual accuracy auditing via strict metadata tags.</p>
+                            <p class="text-white">Success Target: &lt; 2% Hallucination</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Hybrid RAG Technical Architecture",
+                subtitle: "Slide 10 of 11: Langflow orchestration & Ollama parameters",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center text-[10px] font-mono">
+                        <div class="md:col-span-8 space-y-3">
+                            <h4 class="font-space font-bold text-white text-xs uppercase text-brand-teal">Vibe Prototyping Tech Stack</h4>
+                            <ul class="space-y-1.5 text-slate-300">
+                                <li>&bull; Orchestration Layer: **Langflow Canvas APIs**</li>
+                                <li>&bull; Semantic DB Store: **ChromaDB Lightweight vector embed**</li>
+                                <li>&bull; Inference engines: **Ollama Offline private server deployment**</li>
+                                <li>&bull; Secondary search: **Tavily optimized web aggregator**</li>
+                            </ul>
+                        </div>
+                        <div class="md:col-span-4 bg-slate-950 p-4 rounded-xl border border-slate-900 text-center space-y-1">
+                            <span class="text-brand-teal font-bold uppercase block text-[9px]">Ingestion Split size</span>
+                            <span class="text-lg font-space font-bold text-white block">500 / 50</span>
+                            <p class="text-[9px] text-slate-600">500 character chunks with a 50 character sliding text overlap.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "60-Day MVP Value Roadmap",
+                subtitle: "Slide 11 of 11: Phase 1 implementation blueprint",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] font-mono">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900 space-y-1 border-l-4 border-l-brand-teal">
+                            <span class="text-brand-teal font-bold">WEEKS 1-4: COMPILING</span>
+                            <p class="text-slate-400">Ingestion pipelines, ChromaDB embeds, and executive summary modules.</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900 space-y-1 border-l-4 border-l-brand-glowBlue">
+                            <span class="text-brand-glowBlue font-bold">WEEKS 5-6: ANALYSIS</span>
+                            <p class="text-slate-400">Semantic cross-source trends, early threat warning triggers.</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-slate-900 space-y-1 border-l-4 border-l-emerald-400">
+                            <span class="text-emerald-400 font-bold">WEEKS 7-8: NOTIFY</span>
+                            <p class="text-slate-400">Smart watchlists, daily briefs summaries, and proactive push telemetry.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 font-mono text-[11px] mt-4 flex justify-between items-center text-slate-300">
+                        <span>Expected Churn Impact: <strong class="text-brand-teal">12% to 8% (-33%)</strong></span>
+                        <span>TTI Target: <strong class="text-emerald-400">&lt; 15 mins (daily briefings)</strong></span>
+                    </div>
+                `
+            }
+        ];
+
+        function renderDeckSlide() {
+            const slide = presentationSlides[currentSlideIndex];
+            const stage = document.getElementById('slide-content-stage');
+            const indexLbl = document.getElementById('slide-index-lbl');
+            const pageIndicator = document.getElementById('slide-page-indicator');
+
+            stage.innerHTML = `
+                <h1 class="text-4xl font-space font-bold text-white tracking-tight leading-tight mb-1">${slide.title}</h1>
+                <p class="text-xs font-mono text-brand-teal uppercase tracking-widest font-semibold">${slide.subtitle}</p>
+                <div class="mt-6">
+                    ${slide.content}
+                </div>
+            `;
+
+            indexLbl.textContent = `Slide ${currentSlideIndex + 1} of ${presentationSlides.length}`;
+            pageIndicator.textContent = `Page ${currentSlideIndex + 1}`;
+            lucide.createIcons();
+        }
+
+        function navigateSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 0) currentSlideIndex = presentationSlides.length - 1;
+            if (currentSlideIndex >= presentationSlides.length) currentSlideIndex = 0;
+            renderDeckSlide();
+        }
+
+        // Listen to native arrow key presses
+        document.addEventListener('keydown', (e) => {
+            if (globalModeState !== 'deck') return;
+            if (e.key === 'ArrowRight') navigateSlide(1);
+            if (e.key === 'ArrowLeft') navigateSlide(-1);
+        });
+
+        // Initialize Workspace view
+        window.onload = function() {
+            lucide.createIcons();
+            switchTab('tab-brand');
+            recalculateROILimits();
+        };
     </script>
 </body>
 </html>
